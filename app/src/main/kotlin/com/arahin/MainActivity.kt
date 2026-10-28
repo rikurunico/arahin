@@ -168,7 +168,7 @@ class MainActivity : Activity() {
 
     private fun sendTest() {
         if (!notificationsAllowed()) return toast("Izinkan notifikasi dulu (langkah 1)")
-        notificationTurn("200 m", "", IconMatch('L', null))?.let { TurnNotice.post(this, it) }
+        notificationTurn("200 m", "", IconMatch('L', null))?.let { TurnNotice.post(this, it, "Tes dari Arahin") }
         toast("Terkirim. Cek jammu.")
     }
 

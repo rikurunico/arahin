@@ -16,11 +16,13 @@ object TurnNotice {
         )
     }
 
-    fun post(ctx: Context, turn: Turn) = nm(ctx).notify(
+    // detail fills the line under the title; left empty, Huawei Health shows "You have one new message" there
+    fun post(ctx: Context, turn: Turn, detail: String?) = nm(ctx).notify(
         ID,
         Notification.Builder(ctx, CHANNEL)
             .setSmallIcon(android.R.drawable.ic_menu_directions)
             .setContentTitle(turn.text())
+            .setContentText(detail?.takeIf { it.isNotBlank() } ?: turn.label)
             .setCategory(Notification.CATEGORY_NAVIGATION)
             .setTimeoutAfter(60_000)
             .build()
