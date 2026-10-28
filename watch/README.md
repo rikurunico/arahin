@@ -18,6 +18,6 @@ Belum diuji di jam asli. Source ini dimasukkan ke project DevEco Studio buatanmu
 
 ## Format pesan dari HP
 
-JSON kecil: `{"d":"R","m":"116 m","n":116,"e":"4.8 km · 10:50 · 12 min"}`. `d` = `S` lurus, `L` kiri, `R` kanan, `U` putar balik; `n` = jarak dalam meter (-1 kalau tidak ada).
+JSON kecil: `{"d":"R","m":"116 m","n":116,"e":"4.8 km · 10:50 · 12 min"}`. `d` = `S` lurus, `L` kiri, `R` kanan, `U` putar balik, `O` bundaran (`x` = nomor pintu keluar, 0 kalau tidak diketahui); `n` = jarak dalam meter (-1 kalau tidak ada).
 
-Getar: kiri 1x pendek, kanan 2x pendek, putar balik 1x panjang, lurus senyap. Getar saat melewati 500 m, 200 m, dan 50 m menuju belokan, dan saat arah berganti kalau jaraknya sudah ≤ 500 m (belokan yang baru muncul dari jauh tidak bergetar). Bar di bawah jarak terisi mulai 300 m sebelum belokan. `TRACK` di `index.js` harus sama dengan lebar `.track` di `index.css`.
+Getar: kiri 1x pendek, kanan 2x pendek, putar balik 1x panjang, bundaran 1x panjang + 1x pendek, lurus senyap. Getar saat melewati 500 m, 200 m, dan 50 m menuju belokan, dan saat arah berganti kalau jaraknya sudah ≤ 500 m (belokan yang baru muncul dari jauh tidak bergetar). Bar di bawah jarak terisi mulai 300 m sebelum belokan. `TRACK` di `index.js` harus sama dengan lebar `.track` di `index.css`.

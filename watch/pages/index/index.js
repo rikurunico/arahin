@@ -10,6 +10,7 @@ const DIRS = {
   L: { instr: 'Belok kiri', arrow: IMG + 'arrow-l.png' },
   R: { instr: 'Belok kanan', arrow: IMG + 'arrow-r.png' },
   U: { instr: 'Putar balik', arrow: IMG + 'arrow-u.png' },
+  O: { instr: 'Bundaran', arrow: IMG + 'arrow-o.png' },
 }
 const TRACK = 280 // px, keep equal to .track width in index.css
 const NEAR = 300 // metres where the bar starts filling
@@ -57,7 +58,8 @@ export default {
     this.meters = m.n
 
     // only touch what changed, so the UI re-renders as little as possible
-    if (this.instr !== d.instr) this.instr = d.instr
+    const instr = m.d === 'O' && m.x > 0 ? 'Keluar ke-' + m.x : d.instr
+    if (this.instr !== instr) this.instr = instr
     if (this.arrow !== d.arrow) this.arrow = d.arrow
     if (this.dist !== m.m) this.dist = m.m
     if (this.eta !== m.e) this.eta = m.e
@@ -65,9 +67,13 @@ export default {
     if (this.fill !== fill) this.fill = fill
   },
 
-  // left = 1 short, right = 2 short, u-turn = 1 long, straight = silent: readable without looking
+  // left = 1 short, right = 2 short, u-turn = 1 long, roundabout = long + short, straight = silent
   buzz(dir) {
     if (dir === 'U') return vibrator.vibrate({ mode: 'long' })
+    if (dir === 'O') {
+      vibrator.vibrate({ mode: 'long' })
+      return setTimeout(() => vibrator.vibrate({ mode: 'short' }), 600)
+    }
     if (dir !== 'L' && dir !== 'R') return
     vibrator.vibrate({ mode: 'short' })
     if (dir === 'R') setTimeout(() => vibrator.vibrate({ mode: 'short' }), 300)
