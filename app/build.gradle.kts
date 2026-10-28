@@ -1,7 +1,12 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
+
+// release signing comes from the gitignored local.properties; without it the release APK is simply unsigned
+val local = Properties().apply { rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use(::load) }
 
 android {
     namespace = "com.arahin"
@@ -15,8 +20,20 @@ android {
         versionName = "1.0"
     }
 
+    signingConfigs {
+        local.getProperty("arahin.keystore")?.let { path ->
+            create("release") {
+                storeFile = file(path)
+                storePassword = local.getProperty("arahin.keystore.password")
+                keyAlias = local.getProperty("arahin.key.alias")
+                keyPassword = local.getProperty("arahin.keystore.password")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
