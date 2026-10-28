@@ -11,6 +11,7 @@ const ICON = {
   L: 'arrow-l', R: 'arrow-r', l: 'arrow-sl', r: 'arrow-sr', h: 'arrow-hl', j: 'arrow-hr',
   U: 'arrow-u', O: 'arrow-o', D: 'arrow-d',
 }
+const DRIVE_LEFT = true // Indonesia: roundabouts run clockwise, exit 1 is on the left; set false for right-hand traffic
 const LEFT = 'Llh'
 const RIGHT = 'Rrj'
 const TRACK = 280 // px, keep equal to .track width in index.css
@@ -49,8 +50,10 @@ export default {
     } catch (e) {
       return
     }
-    const icon = ICON[m.d]
+    let icon = ICON[m.d]
     if (!icon) return
+    // schematic 4-arm roundabout: exits 1-3 get their own icon, anything else the generic one
+    if (m.d === 'O' && m.x >= 1 && m.x <= 3) icon += DRIVE_LEFT ? m.x : 4 - m.x
 
     const turned = m.d !== this.dir && m.n >= 0 && m.n <= ALERTS[0]
     const crossed = ALERTS.some((a) => this.meters > a && m.n >= 0 && m.n <= a)
