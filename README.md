@@ -1,6 +1,6 @@
 # Arahin
 
-Petunjuk belok Google Maps langsung di smartwatch, jadi saat touring cukup lirik pergelangan tangan. Dibuat dan diuji dengan **Huawei Watch Fit 4**.
+Petunjuk belok Google Maps di smartwatch, jadi waktu touring cukup lirik pergelangan tangan. Saya pakai dengan **Huawei Watch Fit 4**.
 
 **[⬇ Unduh APK](https://github.com/rikurunico/arahin/releases/latest)** · **[▶ Demo interaktif](https://rikurunico.github.io/arahin/)**
 
@@ -10,85 +10,67 @@ Petunjuk belok Google Maps langsung di smartwatch, jadi saat touring cukup lirik
   <img src="docs/watch-screens.png" alt="Layar app jam Arahin untuk semua jenis manuver" width="520">
 </p>
 
-_Kiri: layar setup di HP. Kanan: pratinjau app jam (Wear Engine), dirender dari HTML/CSS yang sama dengan app jamnya._
+_Kiri: setup di HP. Kanan: app jam (Wear Engine), dirender dari HTML/CSS yang sama._
 
 ## Cara kerja
 
-1. Arahin membaca notifikasi navigasi Google Maps di HP.
-2. Teks notifikasi Maps hanya berisi jarak dan nama jalan, sedangkan arahnya cuma ada di **gambar panah**. Arahin mengenali gambar itu (`ManeuverIcon.kt`) dengan mencocokkannya ke ikon yang diambil dari notifikasi Maps asli, dan memakai teks sebagai cadangan.
-3. Arahin memposting notifikasi singkat seperti `◀ BELOK KIRI 200 m`, dengan sisa waktu dan jam tiba di baris kedua.
-4. Huawei Health (atau app jam pendamping lain) meneruskannya ke jam, dan jam bergetar.
+Notifikasi navigasi Google Maps cuma berisi jarak dan nama jalan. Arahnya ada di gambar panah. Arahin mencocokkan gambar itu dengan ikon yang diambil dari notifikasi Maps asli (`ManeuverIcon.kt`), lalu memunculkan notifikasi pendek seperti `◀ BELOK KIRI 200 m`. Huawei Health meneruskannya ke jam.
 
-Maps memperbarui jaraknya kira-kira tiap 10 m. Supaya jam tidak bergetar terus, Arahin hanya memposting saat belokan baru muncul dalam **500 m**, lalu saat jarak melewati **200 m** dan **50 m** (`AlertGate.kt`). Lurus, gabung jalur, dan jalan keluar tidak bergetar.
+Maps memperbarui jarak kira-kira tiap 10 m, dan jam bakal getar tiap kali notifikasinya berubah. Karena itu Arahin cuma memunculkan notifikasi di **500**, **200**, dan **50 m** sebelum belokan (`AlertGate.kt`). Lurus, gabung jalur, dan jalan keluar tidak bikin getar.
 
-Sudah diuji dari ujung ke ujung: Google Maps di POCO F6 (Android 16) → Arahin → Huawei Health → Watch Fit 4.
+Sudah saya coba di POCO F6 (Android 16) dengan Watch Fit 4.
 
 ## Pakai
 
-1. Unduh `arahin.apk` dari [Releases](https://github.com/rikurunico/arahin/releases/latest) lalu pasang (Android 8.0+, izinkan pemasangan dari sumber ini).
-2. Buka Arahin. Layar pertamanya berupa checklist yang memberi tahu apa saja yang perlu diizinkan, lengkap dengan statusnya. Langkah yang harus dikerjakan berikutnya diberi bingkai kuning, dan langkah yang selesai berubah jadi centang hijau **Aktif**:
-
-   | # | Langkah | Isi di aplikasi | |
-   |---|---|---|---|
-   | 1 | **Izinkan notifikasi** | Arahin menampilkan belokan sebagai notifikasi, dan notifikasi itulah yang diteruskan ke jam. | Wajib |
-   | 2 | **Baca petunjuk Google Maps** | Aktifkan Arahin di layar Akses notifikasi. Hanya notifikasi Google Maps yang dibaca, tidak ada yang dikirim ke internet. | Wajib |
-   | 3 | **Tetap jalan di latar belakang** | Kecualikan Arahin dari penghemat baterai supaya tidak dimatikan saat layar HP mati. Di Xiaomi, aktifkan juga Autostart untuk Arahin. | Dianjurkan |
-   | 4 | **Teruskan ke jam di Huawei Health** | Buka Huawei Health, pilih jammu, masuk ke Notifikasi, lalu aktifkan Arahin. | Wajib |
-   | 5 | **Coba kirim ke jam** | Kirim belokan contoh acak. Arah, jarak, dan waktu tiba berbeda setiap kali. Jam harus bergetar dan menampilkannya. | Dianjurkan |
-   | 6 | **Layar navigasi di jam** | Untuk app Arahin di jam (panah besar, getar beda kiri dan kanan). Butuh izin Wear Engine dari Huawei. Lewati kalau cukup notifikasi. | Opsional |
-
-3. Mulai navigasi di Google Maps. Jam bergetar 500, 200, dan 50 m sebelum belokan.
+1. Unduh `arahin.apk` dari [Releases](https://github.com/rikurunico/arahin/releases/latest) lalu pasang (Android 8.0+).
+2. Buka Arahin dan ikuti checklist-nya sampai semua langkah wajib hijau. Jangan lupa nyalakan notifikasi Arahin di Huawei Health.
+3. Mulai navigasi di Google Maps.
 
 ## Privasi
 
-- Tidak ada izin `INTERNET`, jadi data tidak bisa keluar dari HP.
-- Hanya notifikasi `com.google.android.apps.maps` yang dibaca.
-- Nama jalan tidak diteruskan ke jam. Build release tidak mencatat log apa pun.
+Arahin tidak punya izin `INTERNET`, hanya membaca notifikasi `com.google.android.apps.maps`, dan tidak mengirim nama jalan ke jam. Build release tidak mencatat log.
 
-## Layar navigasi di jam (opsional, Wear Engine)
+## Layar navigasi di jam (opsional)
 
-Selain notifikasi, Arahin bisa mengirim arah, jarak, dan ETA ke app kecil di jam yang menampilkan panah besar dengan pola getar berbeda untuk kiri dan kanan. Source-nya ada di [`watch/`](watch/README.md).
-
-App ini butuh akun developer Huawei yang sudah terverifikasi, izin **Wear Engine** (Basic device information) yang disetujui Huawei, dan fingerprint signing di `WatchLink.kt` serta `watch/pages/index/index.js`. SHA-256 sertifikat APK release:
+Ada juga app kecil untuk jam yang menampilkan panah besar dan getar beda untuk kiri dan kanan. Source-nya di [`watch/`](watch/README.md). App ini perlu akun developer Huawei terverifikasi, izin **Wear Engine** (Basic device information), dan fingerprint signing di `WatchLink.kt` serta `watch/pages/index/index.js`. SHA-256 sertifikat APK release:
 
 ```
 28:DA:EB:EF:9C:CB:F3:12:5D:20:9F:44:77:F6:5B:D2:FE:B4:50:65:66:73:79:C5:08:01:F4:15:DF:D0:37:D9
 ```
 
-Tanpa itu semua, jalur notifikasi tetap jalan.
+Tanpa ini pun notifikasi tetap jalan.
 
 ## Build
 
-Buka folder ini di Android Studio, atau dengan Gradle 8.9+ dan JDK 17–21:
+Android Studio, atau Gradle 8.9+ dengan JDK 17–21:
 
 ```
 gradle :app:testDebugUnitTest :app:assembleDebug
 ```
 
-APK release ditandatangani hanya kalau `local.properties` berisi `arahin.keystore`, `arahin.keystore.password`, dan `arahin.key.alias`. Tanpa itu, APK release dibuat tanpa tanda tangan.
+Untuk APK release yang ditandatangani, isi `arahin.keystore`, `arahin.keystore.password`, dan `arahin.key.alias` di `local.properties`. Kalau kosong, APK release keluar tanpa tanda tangan.
 
 ## Kalibrasi dan tes (build debug)
 
-Ikon dan teks sudah diuji dengan notifikasi Google Maps asli di emulator dan di HP sungguhan. Kalau Maps di HP-mu memakai ikon lain:
+Kalau Maps di HP kamu pakai ikon yang belum dikenal:
 
-1. Pasang build **debug** dan aktifkan Akses notifikasi untuk Arahin.
+1. Pasang build **debug** dan nyalakan Akses notifikasi untuk Arahin.
 2. Jalankan `adb logcat -s Arahin:D`, lalu navigasi di Google Maps.
-3. Setiap baris berbentuk `raw=[judul | teks | ETA] icon=<hash>:<hasil> alert=<getar?> -> <JSON untuk jam>`. Ikon yang hasilnya `null` disimpan di `/sdcard/Android/data/com.arahin/files/icons/<hash>.png`. Tarik dengan `adb pull`, lalu kirim lewat issue atau pull request.
+3. Tiap baris berbentuk `raw=[judul | teks | ETA] icon=<hash>:<hasil> alert=<getar?> -> <JSON untuk jam>`. Ikon dengan hasil `null` tersimpan di `/sdcard/Android/data/com.arahin/files/icons/<hash>.png`. Ambil pakai `adb pull`, lalu kirim lewat issue atau PR.
 
 Log dan ikon berisi nama jalan, jadi jangan dibagikan sembarangan.
 
-Alat tes tanpa harus berkendara (hanya ada di build debug):
+Tes tanpa berkendara (cuma ada di build debug):
 
-- **Belokan palsu:** `adb shell am broadcast -n com.arahin/.DemoReceiver --es d L --ei m 200` memposting notifikasi belokan seperti dari Maps. `d` = jenis manuver seperti di [`watch/`](watch/README.md), `m` = meter, `--ei x 2` = pintu keluar bundaran.
-- **Perjalanan palsu di HP asli:** jalankan `adb shell appops set com.arahin android:mock_location allow`, lalu kirim lokasi tiap detik dengan `adb shell am broadcast -n com.arahin/.MockGps --ef lat <lat> --ef lon <lon> --ef bearing <derajat>` sambil navigasi Google Maps berjalan. Matikan dengan `--ez stop true` dan `appops set ... default`.
-- **Emulator:** image Google APIs dengan Google Maps. Lokasi digerakkan dengan `adb emu geo fix <lon> <lat>`.
+- **Belokan palsu:** `adb shell am broadcast -n com.arahin/.DemoReceiver --es d L --ei m 200`. `d` = jenis manuver (lihat [`watch/`](watch/README.md)), `m` = meter, `--ei x 2` = pintu keluar bundaran.
+- **Perjalanan palsu di HP:** `adb shell appops set com.arahin android:mock_location allow`, lalu kirim lokasi tiap detik dengan `adb shell am broadcast -n com.arahin/.MockGps --ef lat <lat> --ef lon <lon> --ef bearing <derajat>` selama navigasi Maps jalan. Berhenti dengan `--ez stop true`, lalu `appops set ... default`.
+- **Emulator:** image Google APIs + Google Maps, geser lokasi dengan `adb emu geo fix <lon> <lat>`.
 
 ## Batasan
 
-- Ikon dan format notifikasi Google Maps tidak dijamin stabil, dan berbeda antar versi. Contohnya, Android 16 memakai notifikasi "Live Update" dengan jarak dan instruksi di judul. Pencocokan ikon diuji dengan ikon asli di `ManeuverIconTest.kt`.
-- Bundaran: jam menampilkan arah keluar (kiri, lurus, kanan), bukan nomor pintu keluar sebenarnya.
-- Lewat notifikasi, pola getarnya pola bawaan jam, tidak dibedakan kiri dan kanan.
-- Jam harus bisa meneruskan notifikasi app pihak ketiga.
+- Ikon dan format notifikasi Google Maps bisa berubah antar versi. Di Android 16, misalnya, Maps pakai notifikasi "Live Update" dengan jarak di judul.
+- Lewat notifikasi, getarnya pola bawaan jam, kiri dan kanan sama.
+- Bundaran cuma ditampilkan sebagai arah keluar (kiri, lurus, kanan), bukan nomor pintu.
 
 ## Lisensi
 

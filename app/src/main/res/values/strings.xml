@@ -2,5 +2,5 @@
 <resources>
     <string name="app_name">Arahin</string>
     <string name="tagline">Petunjuk belok Google Maps di jam tanganmu</string>
-    <string name="footer">Setelah semua siap, mulai navigasi di Google Maps. Jam bergetar 500, 200, dan 50 m sebelum belokan.\n\nArahin tidak punya izin internet dan hanya membaca notifikasi Google Maps. Nama jalan tidak diteruskan ke jam.</string>
+    <string name="footer">Kalau sudah beres, mulai navigasi di Google Maps. Jam getar di 500, 200, dan 50 m sebelum belokan.\n\nArahin tidak punya izin internet, dan nama jalan tidak dikirim ke jam.</string>
 </resources>

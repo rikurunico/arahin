@@ -84,8 +84,8 @@ fun parseTurn(text: String): Turn? {
     return Turn(dir, dist, meters, exit, labelOf(dir, t, exit))
 }
 
-// Text no rule recognised is still better on the wrist than a blank screen.
-// Maps' title is often just the distance, then the street name in the text is the more useful label.
+// No rule matched: show the raw text rather than nothing. When the title is only a distance,
+// the street name in the text makes the better label.
 fun fallbackTurn(title: String, text: String = ""): Turn? {
     val t = title.trim()
     val s = (if (DISTANCE.matchEntire(t.lowercase()) != null) text.trim() else t).ifEmpty { t }.takeIf { it.isNotEmpty() } ?: return null

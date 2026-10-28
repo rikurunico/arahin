@@ -1,8 +1,8 @@
 # Arahin watch app (Huawei Lite Wearable, JS)
 
-Layar navigasi di jam: instruksi, panah besar, jarak, dan ETA. Data datang dari app HP lewat Wear Engine.
+Layar navigasi di jam: instruksi, panah besar, jarak, dan ETA, dikirim dari app HP lewat Wear Engine.
 
-Belum diuji di jam asli. Source ini dimasukkan ke project DevEco Studio buatanmu sendiri, karena `config.json`, signing, dan `wearengine.js` dibuat/diunduh di sana.
+Belum dicoba di jam asli. Masukkan source ini ke project DevEco Studio kamu sendiri, karena `config.json`, signing, dan `wearengine.js` dibuat atau diunduh di sana.
 
 ## Pasang
 
@@ -22,6 +22,6 @@ JSON kecil: `{"d":"R","t":"Belok kanan","m":"116 m","n":116,"x":0,"e":"4.8 km ·
 
 - `d` = jenis manuver: `S` lurus/lanjut/awal rute, `L` `R` belok, `l` `r` serong/tetap di sisi/percabangan/ramp, `h` `j` belok tajam, `U` putar balik, `O` bundaran, `D` tujuan, `M` gabung jalur, `E` ambil jalan keluar (sisi tidak diketahui), `Q` keluar dari bundaran, `?` teks yang tidak dikenali (ditampilkan apa adanya).
 - `t` = instruksi singkat berbahasa Indonesia yang ditampilkan di jam, `m` = jarak, `n` = jarak dalam meter (-1 kalau tidak ada), `x` = nomor pintu keluar bundaran (0 kalau tidak ada), `e` = ETA.
-- Ikon: `common/images/arrow-{s,l,r,sl,sr,hl,hr,u,o,o1,o2,o3,d}.png`. Ikon bundaran `o1` `o2` `o3` menggambar bundaran 4 lengan dari bawah: pintu yang harus diambil terang dengan panah, pintu lain redup. Itu skema, bukan bentuk bundaran sebenarnya. `DRIVE_LEFT` di `index.js` (default `true`, lalu lintas kiri) menentukan pintu 1 di kiri atau kanan.
+- Ikon: `common/images/arrow-{s,l,r,sl,sr,hl,hr,u,o,o1,o2,o3,d}.png`. Ikon bundaran `o1` `o2` `o3` menggambar bundaran 4 lengan dari bawah: pintu yang harus diambil terang dengan panah, pintu lain redup. Cuma skema, bukan bentuk bundaran aslinya. `DRIVE_LEFT` di `index.js` (default `true`, lalu lintas kiri) menentukan pintu 1 di kiri atau kanan.
 
 Getar: kiri (termasuk serong dan tajam) 1x pendek, kanan 2x pendek, putar balik 1x panjang, bundaran 1x panjang + 1x pendek, tujuan 2x panjang, lurus, gabung, dan jalan keluar senyap. Getar saat melewati 500 m, 200 m, dan 50 m menuju belokan, dan saat arah berganti kalau jaraknya sudah ≤ 500 m (belokan yang baru muncul dari jauh tidak bergetar). Bar di bawah jarak terisi mulai 300 m sebelum belokan. `TRACK` di `index.js` harus sama dengan lebar `.track` di `index.css`.

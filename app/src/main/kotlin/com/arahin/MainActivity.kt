@@ -42,34 +42,34 @@ class MainActivity : Activity() {
         listOf(
             Step(
                 Kind.REQUIRED, "Izinkan notifikasi",
-                "Arahin menampilkan belokan sebagai notifikasi, dan notifikasi itulah yang diteruskan ke jam.",
+                "Belokan muncul sebagai notifikasi, lalu diteruskan ke jam.",
                 "Izinkan", ::notificationsAllowed, ::askNotifications,
             ),
             Step(
                 Kind.REQUIRED, "Baca petunjuk Google Maps",
-                "Aktifkan Arahin di layar Akses notifikasi. Hanya notifikasi Google Maps yang dibaca, tidak ada yang dikirim ke internet.",
+                "Nyalakan Arahin di Akses notifikasi. Yang dibaca cuma notifikasi Google Maps.",
                 "Buka pengaturan", ::listenerEnabled,
             ) { open(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)) },
             Step(
                 Kind.RECOMMENDED, "Tetap jalan di latar belakang",
-                "Kecualikan Arahin dari penghemat baterai supaya tidak dimatikan saat layar HP mati." +
-                    if (isXiaomi()) " Di Xiaomi, aktifkan juga Autostart untuk Arahin." else "",
+                "Keluarkan Arahin dari penghemat baterai, biar tidak dimatikan waktu layar HP mati." +
+                    if (isXiaomi()) " Di Xiaomi, nyalakan juga Autostart." else "",
                 "Kecualikan", ::batteryExempt, ::askBattery,
             ),
             Step(
                 Kind.REQUIRED, "Teruskan ke jam di Huawei Health",
-                if (installed(HEALTH)) "Buka Huawei Health, pilih jammu, masuk ke Notifikasi, lalu aktifkan Arahin."
-                else "Huawei Health belum terpasang. Pasang dan sambungkan jammu, lalu aktifkan notifikasi Arahin di sana.",
+                if (installed(HEALTH)) "Di Huawei Health, pilih jam kamu > Notifikasi, lalu nyalakan Arahin."
+                else "Huawei Health belum terpasang. Pasang, sambungkan jam kamu, lalu nyalakan notifikasi Arahin di sana.",
                 "Buka Huawei Health", null,
             ) { packageManager.getLaunchIntentForPackage(HEALTH)?.let(::open) ?: toast("Huawei Health tidak ditemukan") },
             Step(
                 Kind.RECOMMENDED, "Coba kirim ke jam",
-                "Kirim belokan contoh acak. Arah, jarak, dan waktu tiba berbeda setiap kali. Jam harus bergetar dan menampilkannya.",
+                "Kirim belokan contoh, acak tiap kali. Kalau sudah benar, jam bakal getar dan menampilkannya.",
                 "Kirim tes", null, ::sendTest,
             ),
             Step(
                 Kind.OPTIONAL, "Layar navigasi di jam",
-                "Untuk app Arahin di jam (panah besar, getar beda kiri dan kanan). Butuh izin Wear Engine dari Huawei. Lewati kalau cukup notifikasi.",
+                "App Arahin di jam: panah besar, getar kiri dan kanan beda. Perlu izin Wear Engine dari Huawei. Kalau notifikasi sudah cukup, lewati aja.",
                 "Hubungkan", null,
             ) { WatchLink.authorize(this) { toast("Selesai") } },
         )
@@ -182,7 +182,7 @@ class MainActivity : Activity() {
         val total = if (left < 1000) "$left m" else "%.1f km".format(Locale.US, left / 1000.0)
         val eta = SimpleDateFormat("HH.mm", Locale.US).format(Date(System.currentTimeMillis() + min * 60_000L))
         notificationTurn(dist, "", IconMatch(dir, exit))?.let { TurnNotice.post(this, it, "$min min · $total · $eta ETA") }
-        toast("Terkirim. Cek jammu.")
+        toast("Terkirim, cek jam kamu")
     }
 
     private fun isXiaomi() = Build.MANUFACTURER.equals("Xiaomi", ignoreCase = true)
