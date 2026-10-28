@@ -17,6 +17,10 @@ Arahin membaca notifikasi navigasi Google Maps, lalu memposting notifikasi singk
 3. Di app jam pendamping (misalnya Huawei Health), aktifkan notifikasi untuk Arahin.
 4. Mulai navigasi di Google Maps.
 
+## Layar navigasi di jam (opsional, Wear Engine)
+
+Selain notifikasi, Arahin bisa mengirim arah, jarak, dan ETA ke app kecil di jam yang menampilkan panah besar. Source jam ada di [`watch/`](watch/README.md). Butuh akun developer Huawei, izin Wear Engine untuk app HP (Basic device information), HMS-compatible Huawei Health di HP, dan signing fingerprint di `WatchLink.kt` serta `watch/pages/index/index.js`. Tanpa itu, jalur notifikasi tetap jalan.
+
 ## Batasan
 
 - Format notifikasi Google Maps tidak dijamin stabil. Parser ada di `Turn.kt` (dengan tes di `TurnTest.kt`), dan mengenali kata kunci Indonesia dan Inggris.

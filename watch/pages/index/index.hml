@@ -1,0 +1,6 @@
+<div class="page">
+  <text class="instr">{{ instr }}</text>
+  <image class="arrow" src="{{ arrow }}"></image>
+  <text class="dist">{{ dist }}</text>
+  <text class="eta">{{ eta }}</text>
+</div>

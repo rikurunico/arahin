@@ -26,5 +26,6 @@ android {
 }
 
 dependencies {
+    implementation("com.huawei.hms:wearengine:5.0.2.306")
     testImplementation("junit:junit:4.13.2")
 }

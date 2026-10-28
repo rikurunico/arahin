@@ -11,6 +11,10 @@ import android.provider.Settings
 class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WatchLink.authorize(this, ::requestNotifications)
+    }
+
+    private fun requestNotifications() {
         val post = Manifest.permission.POST_NOTIFICATIONS
         if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(post) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(post), 0)

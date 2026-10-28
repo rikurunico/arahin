@@ -1,0 +1,43 @@
+package com.arahin
+
+import android.app.Activity
+import android.content.Context
+import com.huawei.wearengine.HiWear
+import com.huawei.wearengine.auth.AuthCallback
+import com.huawei.wearengine.auth.Permission
+import com.huawei.wearengine.device.Device
+import com.huawei.wearengine.p2p.Message
+import com.huawei.wearengine.p2p.SendCallback
+import org.json.JSONObject
+
+private const val WATCH_PKG = "com.arahin.watch"
+private const val WATCH_FINGERPRINT = "REPLACE_WITH_WATCH_SIGNING_FINGERPRINT"
+
+object WatchLink {
+    @Volatile private var device: Device? = null
+
+    fun authorize(activity: Activity, done: () -> Unit) {
+        HiWear.getAuthClient(activity).requestPermission(object : AuthCallback {
+            override fun onOk(permissions: Array<Permission>) = done()
+            override fun onCancel() = done()
+        }, Permission.DEVICE_MANAGER)
+    }
+
+    fun refresh(ctx: Context) {
+        HiWear.getDeviceClient(ctx).bondedDevices.addOnSuccessListener { devices ->
+            device = devices.firstOrNull { it.isConnected }
+        }
+    }
+
+    fun send(ctx: Context, turn: Turn, eta: String?) {
+        val d = device ?: return refresh(ctx)
+        val body = JSONObject().put("d", turn.dir.toString()).put("m", turn.dist.orEmpty()).put("e", eta.orEmpty())
+        val p2p = HiWear.getP2pClient(ctx)
+        p2p.setPeerPkgName(WATCH_PKG)
+        p2p.setPeerFingerPrint(WATCH_FINGERPRINT)
+        p2p.send(d, Message.Builder().setPayload(body.toString().toByteArray()).build(), object : SendCallback {
+            override fun onSendResult(resultCode: Int) {}
+            override fun onSendProgress(progress: Long) {}
+        })
+    }
+}
