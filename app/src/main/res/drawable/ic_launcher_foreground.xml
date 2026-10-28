@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A turn arrow in the watch app's yellow, kept inside the 66dp safe zone of the 108dp adaptive canvas -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M39,77 L39,55 Q39,41 53,41 L62,41"
+        android:strokeColor="#FFC700"
+        android:strokeWidth="11"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="#FFC700"
+        android:pathData="M58,26 L76,41 L58,56 Z"
+        android:strokeColor="#FFC700"
+        android:strokeWidth="3"
+        android:strokeLineJoin="round" />
+</vector>
