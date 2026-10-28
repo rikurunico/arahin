@@ -23,6 +23,8 @@ object TurnNotice {
             .setSmallIcon(android.R.drawable.ic_menu_directions)
             .setContentTitle(turn.text())
             .setContentText(detail?.takeIf { it.isNotBlank() } ?: turn.label)
+            // like Maps' own: a private notification may reach the wrist only as "You have one new message"
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
             .setCategory(Notification.CATEGORY_NAVIGATION)
             .setTimeoutAfter(60_000)
             .build()

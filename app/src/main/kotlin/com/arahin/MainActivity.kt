@@ -17,6 +17,10 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import kotlin.random.Random
 
 private const val HEALTH = "com.huawei.health"
 
@@ -60,7 +64,7 @@ class MainActivity : Activity() {
             ) { packageManager.getLaunchIntentForPackage(HEALTH)?.let(::open) ?: toast("Huawei Health tidak ditemukan") },
             Step(
                 Kind.RECOMMENDED, "Coba kirim ke jam",
-                "Kirim satu belokan contoh. Jam harus bergetar dan menampilkan \"◀ BELOK KIRI 200 m\".",
+                "Kirim belokan contoh acak, misalnya \"◀ BELOK KIRI 200 m\". Jam harus bergetar dan menampilkannya.",
                 "Kirim tes", null, ::sendTest,
             ),
             Step(
@@ -166,9 +170,18 @@ class MainActivity : Activity() {
         open(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:$packageName")))
     }
 
+    // a random turn that looks like a real Maps one, so every press shows something different on the wrist
     private fun sendTest() {
         if (!notificationsAllowed()) return toast("Izinkan notifikasi dulu (langkah 1)")
-        notificationTurn("200 m", "", IconMatch('L', null))?.let { TurnNotice.post(this, it, "Tes dari Arahin") }
+        val (dir, exit) = listOf('L' to null, 'R' to null, 'l' to null, 'r' to null, 'h' to null, 'j' to null, 'U' to null,
+            'O' to 1, 'O' to 2, 'O' to 3, 'D' to null, 'M' to null).random()
+        val m = listOf(50, 80, 120, 200, 250, 350, 500, 750, 1200, 2300).random()
+        val dist = if (m < 1000) "$m m" else "%.1f km".format(Locale.US, m / 1000.0)
+        val left = m + Random.nextInt(300, 9000) // rest of the route, in metres
+        val min = maxOf(1, left / 450) // ~27 km/h through town
+        val total = if (left < 1000) "$left m" else "%.1f km".format(Locale.US, left / 1000.0)
+        val eta = SimpleDateFormat("HH.mm", Locale.US).format(Date(System.currentTimeMillis() + min * 60_000L))
+        notificationTurn(dist, "", IconMatch(dir, exit))?.let { TurnNotice.post(this, it, "$min min · $total · $eta ETA") }
         toast("Terkirim. Cek jammu.")
     }
 
