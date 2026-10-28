@@ -16,20 +16,20 @@
 
 .track {
   width: 280px;
-  height: 8px;
-  border-radius: 4px;
+  height: 12px;
+  border-radius: 6px;
   background-color: #2a2a2e;
 }
 
 .fill {
-  height: 8px;
-  border-radius: 4px;
+  height: 12px;
+  border-radius: 6px;
   background-color: #ffc700;
 }
 
 .arrow {
-  width: 150px;
-  height: 150px;
+  width: 170px;
+  height: 170px;
 }
 
 .instr {
@@ -49,7 +49,7 @@
 }
 
 .eta {
-  font-size: 22px;
-  color: #b8b8c0;
+  font-size: 24px;
+  color: #d0d0d8;
   text-align: center;
 }

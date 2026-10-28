@@ -13,7 +13,7 @@ const DIRS = {
 }
 const TRACK = 280 // px, keep equal to .track width in index.css
 const NEAR = 300 // metres where the bar starts filling
-const ALERTS = [200, 50] // metres where the watch buzzes again
+const ALERTS = [500, 200, 50] // metres where the watch buzzes; a turn first seen farther away stays silent
 
 export default {
   data: {
@@ -50,7 +50,7 @@ export default {
     const d = DIRS[m.d]
     if (!d) return
 
-    const turned = m.d !== this.dir
+    const turned = m.d !== this.dir && m.n >= 0 && m.n <= ALERTS[0]
     const crossed = ALERTS.some((a) => this.meters > a && m.n >= 0 && m.n <= a)
     if (turned || crossed) this.buzz(m.d)
     this.dir = m.d
