@@ -40,12 +40,12 @@ Tanpa ini pun notifikasi tetap jalan.
 
 APK dari Releases sering diblokir Play Protect karena Arahin minta akses notifikasi. Kalau kamu developer, lebih gampang build dan pasang sendiri lewat USB, karena jalur itu tidak dicek Play Protect.
 
-Yang perlu disiapkan: Android Studio, atau Gradle 8.9+ dengan JDK 17–21 (repo ini tidak menyertakan `gradlew`). Lalu HP dengan USB debugging menyala.
+Yang perlu disiapkan: Android Studio, atau JDK 17–21 plus Android SDK (set `ANDROID_HOME`, atau isi `sdk.dir` di `local.properties`). Lalu HP dengan USB debugging menyala.
 
 1. Clone repo ini, buka di Android Studio, colok HP, lalu tekan **Run**. Atau lewat terminal:
 
    ```
-   gradle :app:testDebugUnitTest :app:installDebug
+   ./gradlew :app:testDebugUnitTest :app:installDebug
    ```
 
 2. Buka Arahin di HP dan ikuti checklist-nya. Di Android 13+, kalau tombol Akses notifikasi tidak bisa dinyalakan, buka **Info aplikasi → ⋮ → Izinkan setelan terbatas** dulu.
