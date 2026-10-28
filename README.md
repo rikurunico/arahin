@@ -2,15 +2,9 @@
 
 Petunjuk belok Google Maps di smartwatch, jadi waktu touring cukup lirik pergelangan tangan. Saya pakai dengan **Huawei Watch Fit 4**.
 
-**[⬇ Unduh APK](https://github.com/rikurunico/arahin/releases/latest)** · **[▶ Demo interaktif](https://rikurunico.github.io/arahin/)**
+[Unduh APK](https://github.com/rikurunico/arahin/releases/latest) · [Demo interaktif](https://rikurunico.github.io/arahin/)
 
-<p>
-  <img src="docs/setup.png" alt="Layar setup Arahin: checklist izin bernomor" width="270">
-  &nbsp;
-  <img src="docs/watch-screens.png" alt="Layar app jam Arahin untuk semua jenis manuver" width="520">
-</p>
-
-_Kiri: setup di HP. Kanan: app jam (Wear Engine), dirender dari HTML/CSS yang sama._
+![Tampilan app jam Arahin untuk tiap jenis belokan](docs/watch-screens.png)
 
 ## Cara kerja
 
@@ -25,6 +19,8 @@ Sudah saya coba di POCO F6 (Android 16) dengan Watch Fit 4.
 1. Unduh `arahin.apk` dari [Releases](https://github.com/rikurunico/arahin/releases/latest) lalu pasang (Android 8.0+).
 2. Buka Arahin dan ikuti checklist-nya sampai semua langkah wajib hijau. Jangan lupa nyalakan notifikasi Arahin di Huawei Health.
 3. Mulai navigasi di Google Maps.
+
+<img src="docs/setup.png" alt="Layar setup Arahin: checklist izin bernomor" width="300">
 
 ## Privasi
 
