@@ -2,7 +2,7 @@
 
 ![Layar jam Arahin: semua jenis navigasi](docs/watch-screens.png)
 
-_Pratinjau semua layar jam (render di browser dari HTML/CSS yang sama dengan aplikasi jam, bukan foto jam asli)._
+_Pratinjau semua layar jam (render di browser dari HTML/CSS yang sama dengan aplikasi jam, bukan foto jam asli)._ Demo interaktif dari rekaman Google Maps asli: <https://rikurunico.github.io/arahin/>
 
 Teruskan petunjuk belok Google Maps ke smartwatch (dibuat untuk Huawei Watch Fit 4), jadi cukup lirik pergelangan tangan saat touring.
 
@@ -38,6 +38,8 @@ Ikon dan teks sudah diuji dengan notifikasi Google Maps asli (Android, Indonesia
 3. Setiap baris berbentuk `raw=[jarak | jalan | ETA] icon=<hash>:<hasil> alert=<getar?> -> <JSON untuk jam>`. Ikon yang hasilnya `null` disimpan di `/sdcard/Android/data/com.arahin/files/icons/<hash>.png`: tarik dengan `adb pull`, lalu kirim lewat issue atau pull request.
 
 Log dan ikon hanya dibuat di build debug dan berisi nama jalan, jadi jangan dibagikan sembarangan. Build release tidak mencatat apa pun.
+
+Tes jam tanpa berkendara (build debug): `adb shell am broadcast -n com.arahin/.DemoReceiver --es d L --ei m 200` memposting notifikasi belokan yang sama seperti dari Maps (`d` = jenis manuver seperti di [`watch/`](watch/README.md), `m` = meter, `--ei x 2` untuk pintu keluar bundaran).
 
 Tanpa HP: emulator dengan Google Play/Google APIs juga bisa. Lokasi digerakkan dengan `adb emu geo fix <lon> <lat>`.
 
