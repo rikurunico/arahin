@@ -36,15 +36,34 @@ Ada juga app kecil untuk jam yang menampilkan panah besar dan getar beda untuk k
 
 Tanpa ini pun notifikasi tetap jalan.
 
-## Build
+## Build sendiri
 
-Android Studio, atau Gradle 8.9+ dengan JDK 17–21:
+APK dari Releases sering diblokir Play Protect karena Arahin minta akses notifikasi. Kalau kamu developer, lebih gampang build dan pasang sendiri lewat USB, karena jalur itu tidak dicek Play Protect.
+
+Yang perlu disiapkan: Android Studio, atau Gradle 8.9+ dengan JDK 17–21 (repo ini tidak menyertakan `gradlew`). Lalu HP dengan USB debugging menyala.
+
+1. Clone repo ini, buka di Android Studio, colok HP, lalu tekan **Run**. Atau lewat terminal:
+
+   ```
+   gradle :app:testDebugUnitTest :app:installDebug
+   ```
+
+2. Buka Arahin di HP dan ikuti checklist-nya. Di Android 13+, kalau tombol Akses notifikasi tidak bisa dinyalakan, buka **Info aplikasi → ⋮ → Izinkan setelan terbatas** dulu.
+
+Dua hal yang sering bikin gagal pasang:
+
+- **Bentrok dengan Arahin resmi.** Build kamu ditandatangani kunci lain, jadi tidak bisa menimpa Arahin dari Releases. Hapus dulu yang lama.
+- **Mau bagikan APK buatanmu sendiri?** Ganti `applicationId` di `app/build.gradle.kts` (misalnya `com.namakamu.arahin`). Nama `com.arahin` sudah terdaftar di Google atas kunci saya, jadi APK lain dengan nama yang sama bisa ditolak di HP orang lain.
+
+APK release yang ditandatangani butuh keystore milikmu sendiri. Isi di `local.properties`:
 
 ```
-gradle :app:testDebugUnitTest :app:assembleDebug
+arahin.keystore=/path/ke/keystore.jks
+arahin.keystore.password=...
+arahin.key.alias=...
 ```
 
-Untuk APK release yang ditandatangani, isi `arahin.keystore`, `arahin.keystore.password`, dan `arahin.key.alias` di `local.properties`. Kalau kosong, APK release keluar tanpa tanda tangan.
+Kalau kosong, APK release keluar tanpa tanda tangan.
 
 ## Kalibrasi dan tes (build debug)
 
