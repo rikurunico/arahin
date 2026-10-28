@@ -25,6 +25,18 @@ Arahin membaca notifikasi navigasi Google Maps, lalu memposting notifikasi singk
 
 Selain notifikasi, Arahin bisa mengirim arah, jarak, dan ETA ke app kecil di jam yang menampilkan panah besar. Source jam ada di [`watch/`](watch/README.md). Butuh akun developer Huawei, izin Wear Engine untuk app HP (Basic device information), HMS-compatible Huawei Health di HP, dan signing fingerprint di `WatchLink.kt` serta `watch/pages/index/index.js`. Tanpa itu, jalur notifikasi tetap jalan.
 
+## Kalibrasi parser (cek teks asli Maps di HP-mu)
+
+Pola di `Turn.kt` sudah diuji dengan kalimat nyata dari Google Maps web (bahasa Indonesia dan Inggris), tapi teks di **notifikasi** HP bisa berbeda, dan kalimat "sampai di tujuan" belum pernah terlihat. Untuk memastikannya:
+
+1. Pasang build **debug** (tombol Run di Android Studio), aktifkan Notification access untuk Arahin.
+2. `adb logcat -s Arahin:D`, lalu jalankan navigasi nyata di Google Maps sampai tiba di tujuan.
+3. Setiap baris berbentuk `raw=[teks asli notifikasi] -> hasil parser`. Baris yang hasilnya `dir=?` atau salah arah adalah pola yang perlu ditambah: kirim baris itu lewat issue atau pull request.
+
+Log hanya dicetak di build debug dan berisi nama jalan, jadi jangan dibagikan sembarangan. Build release tidak mencatat apa pun.
+
+Alternatif tanpa build debug: `adb shell dumpsys notification --noredact | grep -A25 com.google.android.apps.maps` saat navigasi berjalan.
+
 ## Batasan
 
 - Format notifikasi Google Maps tidak dijamin stabil. Parser ada di `Turn.kt` (dengan tes di `TurnTest.kt`), dan mengenali kata kunci Indonesia dan Inggris.

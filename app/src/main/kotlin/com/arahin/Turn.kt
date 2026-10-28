@@ -16,6 +16,7 @@ private val RULES = listOf(
     Rule('r', Regex("""slight right|bear right|keep right|right lane|sedikit ke kanan|kanan sedikit|tetap di kanan|serong kanan|terus kanan|lajur kanan|jalur sebelah kanan|jalur kanan|jalan di kanan|(?:ramp|take exit|jalan keluar)[^.]*?\b(?:right|kanan)\b""")),
     Rule('L', Regex("""\b(?:left|kiri)\b""")),
     Rule('R', Regex("""\b(?:right|kanan)\b""")),
+    // unverified: Maps web never shows arrival text, only a real notification can confirm these words
     Rule('D', Regex("""destination|tujuan|arrive|tiba di""")),
     Rule('M', Regex("""merge|bergabung|get on""")),
     Rule('E', Regex("""ambil jalan keluar|take exit|take the exit""")),
