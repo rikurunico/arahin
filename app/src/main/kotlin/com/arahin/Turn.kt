@@ -20,7 +20,7 @@ private val RULES = listOf(
     Rule('D', Regex("""destination|tujuan|arrive|tiba di""")),
     Rule('M', Regex("""merge|bergabung|get on""")),
     Rule('E', Regex("""ambil jalan keluar|take exit|take the exit""")),
-    Rule('S', Regex("""\b(?:straight|continue|head|lurus|terus|teruskan|lanjutkan|melanjutkan|mengemudi|ikuti|menuju)\b|stay on|middle lane|tetap di|lajur tengah|ambil arah|ke arah""")),
+    Rule('S', Regex("""\b(?:straight|continue|head|toward|lurus|terus|teruskan|lanjutkan|melanjutkan|mengemudi|ikuti|menuju)\b|stay on|middle lane|tetap di|lajur tengah|ambil arah|ke arah""")),
 )
 private val NOTE = Regex("""\([^)]*\)""")
 private val DISTANCE = Regex("""(\d+(?:[.,]\d+)?)\s?(km|m|mi|ft)\b""")
@@ -85,8 +85,19 @@ fun parseTurn(text: String): Turn? {
 }
 
 // Text no rule recognised is still better on the wrist than a blank screen.
-fun fallbackTurn(title: String): Turn? {
-    val s = title.trim().takeIf { it.isNotEmpty() } ?: return null
-    val (dist, meters) = distance(s.lowercase())
+// Maps' title is often just the distance, then the street name in the text is the more useful label.
+fun fallbackTurn(title: String, text: String = ""): Turn? {
+    val t = title.trim()
+    val s = (if (DISTANCE.matchEntire(t.lowercase()) != null) text.trim() else t).ifEmpty { t }.takeIf { it.isNotEmpty() } ?: return null
+    val (dist, meters) = distance(t.lowercase()).takeIf { it.first != null } ?: distance(s.lowercase())
     return Turn('?', dist, meters, null, s.take(28))
+}
+
+// A real Maps notification: title = distance ("200 m"), text = street name or "toward <street>", and the
+// maneuver only in the large icon. The ETA line is left out on purpose, its "12 km" is not the turn distance.
+fun notificationTurn(title: String, text: String, icon: IconMatch?): Turn? {
+    val line = "$title $text"
+    if (icon == null) return parseTurn(line) ?: fallbackTurn(title, text)
+    val (dist, meters) = distance(line.lowercase())
+    return Turn(icon.dir, dist, meters, icon.exit, labelOf(icon.dir, line.lowercase(), icon.exit))
 }
