@@ -2,7 +2,8 @@ package com.arahin
 
 // Maneuver kinds follow Google's navigation taxonomy, collapsed to what a glance needs:
 // S straight/head/continue, L R turn, l r slight/keep/fork/ramp, h j sharp, U u-turn, O roundabout,
-// D destination, M merge, ? unrecognised text relayed as-is.
+// D destination, M merge, E exit/ramp without a side, ? unrecognised text relayed as-is.
+// Indonesian phrases below come from real Google Maps (hl=id) step lists.
 private class Rule(val dir: Char, val re: Regex)
 
 private val RULES = listOf(
@@ -10,14 +11,16 @@ private val RULES = listOf(
     Rule('U', Regex("""u-?turn|putar balik|putar arah""")),
     Rule('h', Regex("""sharp left|tajam ke kiri|kiri tajam""")),
     Rule('j', Regex("""sharp right|tajam ke kanan|kanan tajam""")),
-    Rule('l', Regex("""slight left|bear left|keep left|sedikit ke kiri|kiri sedikit|tetap di kiri|serong kiri|(?:ramp|take exit|jalan keluar)[^.]*?\b(?:left|kiri)\b""")),
-    Rule('r', Regex("""slight right|bear right|keep right|sedikit ke kanan|kanan sedikit|tetap di kanan|serong kanan|(?:ramp|take exit|jalan keluar)[^.]*?\b(?:right|kanan)\b""")),
+    Rule('l', Regex("""slight left|bear left|keep left|sedikit ke kiri|kiri sedikit|tetap di kiri|serong kiri|terus kiri|lajur kiri|jalur sebelah kiri|jalur kiri|jalan di kiri|(?:ramp|take exit|jalan keluar)[^.]*?\b(?:left|kiri)\b""")),
+    Rule('r', Regex("""slight right|bear right|keep right|sedikit ke kanan|kanan sedikit|tetap di kanan|serong kanan|terus kanan|lajur kanan|jalur sebelah kanan|jalur kanan|jalan di kanan|(?:ramp|take exit|jalan keluar)[^.]*?\b(?:right|kanan)\b""")),
     Rule('L', Regex("""\b(?:left|kiri)\b""")),
     Rule('R', Regex("""\b(?:right|kanan)\b""")),
     Rule('D', Regex("""destination|tujuan|arrive|tiba di""")),
     Rule('M', Regex("""merge|bergabung""")),
-    Rule('S', Regex("""\b(?:straight|continue|head|lurus|terus|menuju)\b""")),
+    Rule('E', Regex("""ambil jalan keluar|take exit|take the exit""")),
+    Rule('S', Regex("""\b(?:straight|continue|head|lurus|terus|teruskan|lanjutkan|melanjutkan|mengemudi|ikuti|menuju)\b|tetap di|lajur tengah|ambil arah""")),
 )
+private val NOTE = Regex("""\([^)]*\)""")
 private val DISTANCE = Regex("""(\d+(?:[.,]\d+)?)\s?(km|m|mi|ft)\b""")
 private val EXIT = Regex("""\b(\d+)(?:st|nd|rd|th)\b|\bke[- ]?(\d+)\b|\b(first|second|third|fourth|fifth|pertama|kedua|ketiga|keempat|kelima)\b""")
 private val ORDINAL = mapOf(
@@ -62,12 +65,13 @@ private fun labelOf(dir: Char, t: String, exit: Int?) = when (dir) {
         else -> ""
     }
     'M' -> "Gabung"
+    'E' -> "Ambil jalan keluar"
     else -> "Lurus"
 }
 
 // The rule whose match starts first wins, so a street name later in the text ("ke Jl. Bundaran HI") cannot hijack the maneuver.
 fun parseTurn(text: String): Turn? {
-    val t = text.lowercase()
+    val t = text.lowercase().replace(NOTE, " ") // "(di kiri 350 m lagi)" is a landmark note, not the maneuver
     val dir = RULES.mapNotNull { r -> r.re.find(t)?.let { r.dir to it.range.first } }
         .minByOrNull { it.second }?.first ?: return null
     val exit = if (dir == 'O') EXIT.find(t)?.let { e ->
