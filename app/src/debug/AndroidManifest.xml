@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- debug builds only: lets adb fake a turn so the watch can be tested without driving -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<!-- debug builds only: lets adb fake a turn or a drive so the watch can be tested at home -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission
+        android:name="android.permission.ACCESS_MOCK_LOCATION"
+        tools:ignore="MockLocation,ProtectedPermissions" />
+
     <application>
         <receiver
             android:name=".DemoReceiver"
+            android:exported="true" />
+        <receiver
+            android:name=".MockGps"
             android:exported="true" />
     </application>
 </manifest>

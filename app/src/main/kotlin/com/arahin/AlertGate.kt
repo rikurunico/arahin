@@ -11,20 +11,21 @@ private const val NEXT_TURN_JUMP = 50
 
 class AlertGate {
     private var dir: Char? = null
-    private var meters: Int? = null
+    // closest the current turn has been: GPS jitter (50 m, 60 m, 50 m) must not cross a threshold twice
+    private var closest: Int? = null
 
     fun shouldAlert(turn: Turn): Boolean {
         val m = turn.meters ?: return false // Maps blanks the distance at the turn itself and while rerouting
-        val last = meters
-        val next = turn.dir != dir || (last != null && m > last + NEXT_TURN_JUMP)
-        val crossed = last != null && ALERTS.any { last > it && m <= it }
+        val near = closest
+        val next = turn.dir != dir || (near != null && m > near + NEXT_TURN_JUMP)
+        val crossed = !next && near != null && ALERTS.any { near > it && m <= it }
         dir = turn.dir
-        meters = m
+        closest = if (next || near == null) m else minOf(near, m)
         return turn.dir !in SILENT && m <= ALERTS[0] && (next || crossed)
     }
 
     fun reset() {
         dir = null
-        meters = null
+        closest = null
     }
 }

@@ -41,6 +41,8 @@ Log dan ikon hanya dibuat di build debug dan berisi nama jalan, jadi jangan diba
 
 Tes jam tanpa berkendara (build debug): `adb shell am broadcast -n com.arahin/.DemoReceiver --es d L --ei m 200` memposting notifikasi belokan yang sama seperti dari Maps (`d` = jenis manuver seperti di [`watch/`](watch/README.md), `m` = meter, `--ei x 2` untuk pintu keluar bundaran).
 
+Simulasi berkendara di HP asli (build debug): `adb shell appops set com.arahin android:mock_location allow`, lalu kirim lokasi tiap detik dengan `adb shell am broadcast -n com.arahin/.MockGps --ef lat <lat> --ef lon <lon> --ef bearing <derajat>` sambil navigasi Google Maps berjalan. Matikan dengan `--ez stop true` dan `appops set ... default`.
+
 Tanpa HP: emulator dengan Google Play/Google APIs juga bisa. Lokasi digerakkan dengan `adb emu geo fix <lon> <lat>`.
 
 ## Batasan

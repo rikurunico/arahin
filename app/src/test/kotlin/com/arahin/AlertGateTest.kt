@@ -29,4 +29,7 @@ class AlertGateTest {
     @Test fun blankDistanceIgnored() = assertEquals(listOf("R100", "R50"), alerts('R' to 100, 'R' to null, 'R' to 50))
 
     @Test fun gpsJitterIsNotANewTurn() = assertEquals(listOf("L180"), alerts('L' to 180, 'L' to 190, 'L' to 170, 'L' to 160))
+
+    // seen on a real phone: the distance wobbling around a threshold buzzed twice
+    @Test fun wobbleAroundThreshold() = assertEquals(listOf("L90", "L50"), alerts('L' to 90, 'L' to 70, 'L' to 80, 'L' to 60, 'L' to 50, 'L' to 60, 'L' to 50, 'L' to 60))
 }

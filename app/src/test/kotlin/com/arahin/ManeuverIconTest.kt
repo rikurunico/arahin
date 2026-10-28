@@ -85,6 +85,9 @@ class ManeuverIconTest {
         "sharp-right" to IconMatch('j', null), "u-turn" to IconMatch('U', null), "merge" to IconMatch('M', null),
         "roundabout-exit-1" to IconMatch('O', 1), "roundabout-exit-2" to IconMatch('O', 2),
         "roundabout-exit-3" to IconMatch('O', 3), "roundabout-exit-3-sharp" to IconMatch('O', 3),
+        // 144 px, from a real phone (Android 16, Maps Live Update notification)
+        "phone144-left" to IconMatch('L', null), "phone144-right" to IconMatch('R', null),
+        "phone144-depart" to IconMatch('S', null), "phone144-destination-road" to IconMatch('D', null),
     )
     private val mirror = mapOf('L' to 'R', 'R' to 'L', 'l' to 'r', 'r' to 'l', 'h' to 'j', 'j' to 'h')
 
@@ -118,4 +121,12 @@ class ManeuverIconTest {
     )
 
     @Test fun towardIsStraightWithoutIcon() = assertEquals('S', notificationTurn("0 m", "toward Jl. M.H. Thamrin", null)?.dir)
+
+    // Android 16 Maps puts distance and instruction in the title: "290 m · Turn left onto Jl. ..."
+    @Test fun liveUpdateTitle() = assertEquals(
+        Turn('L', "290 m", 290, null, "Belok kiri"),
+        notificationTurn("290 m · Turn left onto Jl. K.H. Wahid Hasyim", "", IconMatch('L', null)),
+    )
+
+    @Test fun liveUpdateTitleWithoutIcon() = assertEquals('L', notificationTurn("290 m · Turn left onto Jl. Sabang", "", null)?.dir)
 }
