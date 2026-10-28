@@ -64,7 +64,7 @@ class MainActivity : Activity() {
             ) { packageManager.getLaunchIntentForPackage(HEALTH)?.let(::open) ?: toast("Huawei Health tidak ditemukan") },
             Step(
                 Kind.RECOMMENDED, "Coba kirim ke jam",
-                "Kirim belokan contoh acak, misalnya \"◀ BELOK KIRI 200 m\". Jam harus bergetar dan menampilkannya.",
+                "Kirim belokan contoh acak. Arah, jarak, dan waktu tiba berbeda setiap kali. Jam harus bergetar dan menampilkannya.",
                 "Kirim tes", null, ::sendTest,
             ),
             Step(
