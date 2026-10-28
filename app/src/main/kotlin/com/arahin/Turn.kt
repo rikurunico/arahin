@@ -1,6 +1,23 @@
 package com.arahin
 
-private val MANEUVER = Regex("""roundabout|rotary|traffic circle|bundaran|u-?turn|putar balik|\b(left|kiri)\b|\b(right|kanan)\b|\b(straight|continue|lurus|terus)\b""")
+// Maneuver kinds follow Google's navigation taxonomy, collapsed to what a glance needs:
+// S straight/head/continue, L R turn, l r slight/keep/fork/ramp, h j sharp, U u-turn, O roundabout,
+// D destination, M merge, ? unrecognised text relayed as-is.
+private class Rule(val dir: Char, val re: Regex)
+
+private val RULES = listOf(
+    Rule('O', Regex("""roundabout|rotary|traffic circle|bundaran""")),
+    Rule('U', Regex("""u-?turn|putar balik|putar arah""")),
+    Rule('h', Regex("""sharp left|tajam ke kiri|kiri tajam""")),
+    Rule('j', Regex("""sharp right|tajam ke kanan|kanan tajam""")),
+    Rule('l', Regex("""slight left|bear left|keep left|sedikit ke kiri|kiri sedikit|tetap di kiri|serong kiri|(?:ramp|take exit|jalan keluar)[^.]*?\b(?:left|kiri)\b""")),
+    Rule('r', Regex("""slight right|bear right|keep right|sedikit ke kanan|kanan sedikit|tetap di kanan|serong kanan|(?:ramp|take exit|jalan keluar)[^.]*?\b(?:right|kanan)\b""")),
+    Rule('L', Regex("""\b(?:left|kiri)\b""")),
+    Rule('R', Regex("""\b(?:right|kanan)\b""")),
+    Rule('D', Regex("""destination|tujuan|arrive|tiba di""")),
+    Rule('M', Regex("""merge|bergabung""")),
+    Rule('S', Regex("""\b(?:straight|continue|head|lurus|terus|menuju)\b""")),
+)
 private val DISTANCE = Regex("""(\d+(?:[.,]\d+)?)\s?(km|m|mi|ft)\b""")
 private val EXIT = Regex("""\b(\d+)(?:st|nd|rd|th)\b|\bke[- ]?(\d+)\b|\b(first|second|third|fourth|fifth|pertama|kedua|ketiga|keempat|kelima)\b""")
 private val ORDINAL = mapOf(
@@ -8,38 +25,61 @@ private val ORDINAL = mapOf(
     "fourth" to 4, "keempat" to 4, "fifth" to 5, "kelima" to 5,
 )
 
-// dir: L, R, U (u-turn), S (straight) or O (roundabout, see exit); meters is null when no distance was found
-data class Turn(val dir: Char, val dist: String?, val meters: Int?, val exit: Int? = null) {
+// label is the short Indonesian instruction shown on the watch; meters is null when no distance was found
+data class Turn(val dir: Char, val dist: String?, val meters: Int?, val exit: Int?, val label: String) {
     fun text(): String {
-        val label = when (dir) {
-            'U' -> "↩ PUTAR BALIK"
-            'L' -> "◀ KIRI"
-            'R' -> "▶ KANAN"
-            'O' -> "⟳ BUNDARAN" + (exit?.let { " KELUAR $it" } ?: "")
-            else -> "▲ LURUS"
+        val glyph = when (dir) {
+            'L', 'l', 'h' -> "◀"
+            'R', 'r', 'j' -> "▶"
+            'U' -> "↩"
+            'O' -> "⟳"
+            'D' -> "⚑"
+            '?' -> "•"
+            else -> "▲"
         }
-        return listOfNotNull(label, dist).joinToString(" ")
+        return listOfNotNull(glyph, label.uppercase(), dist).joinToString(" ")
     }
 }
 
-// Maps text first match wins, so the maneuver word must precede any street name ("ke Jl. Bundaran HI" stays a plain turn).
+private fun distance(t: String): Pair<String?, Int?> {
+    val d = DISTANCE.find(t) ?: return null to null
+    val unit = when (d.groupValues[2]) { "km" -> 1000.0; "mi" -> 1609.34; "ft" -> 0.3048; else -> 1.0 }
+    return d.value to (d.groupValues[1].replace(',', '.').toDouble() * unit).toInt()
+}
+
+private fun labelOf(dir: Char, t: String, exit: Int?) = when (dir) {
+    'L' -> "Belok kiri"
+    'R' -> "Belok kanan"
+    'l' -> "Serong kiri"
+    'r' -> "Serong kanan"
+    'h' -> "Belok tajam kiri"
+    'j' -> "Belok tajam kanan"
+    'U' -> "Putar balik"
+    'O' -> exit?.let { "Keluar ke-$it" } ?: "Bundaran"
+    'D' -> "Tujuan" + when {
+        Regex("""\b(?:left|kiri)\b""").containsMatchIn(t) -> " di kiri"
+        Regex("""\b(?:right|kanan)\b""").containsMatchIn(t) -> " di kanan"
+        else -> ""
+    }
+    'M' -> "Gabung"
+    else -> "Lurus"
+}
+
+// The rule whose match starts first wins, so a street name later in the text ("ke Jl. Bundaran HI") cannot hijack the maneuver.
 fun parseTurn(text: String): Turn? {
     val t = text.lowercase()
-    val m = MANEUVER.find(t)?.value ?: return null
-    val dir = when {
-        m in setOf("roundabout", "rotary", "traffic circle", "bundaran") -> 'O'
-        m.startsWith("u") || m.startsWith("putar") -> 'U'
-        m == "left" || m == "kiri" -> 'L'
-        m == "right" || m == "kanan" -> 'R'
-        else -> 'S'
-    }
+    val dir = RULES.mapNotNull { r -> r.re.find(t)?.let { r.dir to it.range.first } }
+        .minByOrNull { it.second }?.first ?: return null
     val exit = if (dir == 'O') EXIT.find(t)?.let { e ->
         e.groupValues[1].ifEmpty { e.groupValues[2] }.toIntOrNull() ?: ORDINAL[e.groupValues[3]]
     } else null
-    val d = DISTANCE.find(t)
-    val meters = d?.let {
-        val unit = when (it.groupValues[2]) { "km" -> 1000.0; "mi" -> 1609.34; "ft" -> 0.3048; else -> 1.0 }
-        (it.groupValues[1].replace(',', '.').toDouble() * unit).toInt()
-    }
-    return Turn(dir, d?.value, meters, exit)
+    val (dist, meters) = distance(t)
+    return Turn(dir, dist, meters, exit, labelOf(dir, t, exit))
+}
+
+// Text no rule recognised is still better on the wrist than a blank screen.
+fun fallbackTurn(title: String): Turn? {
+    val s = title.trim().takeIf { it.isNotEmpty() } ?: return null
+    val (dist, meters) = distance(s.lowercase())
+    return Turn('?', dist, meters, null, s.take(28))
 }

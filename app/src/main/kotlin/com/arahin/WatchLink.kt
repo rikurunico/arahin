@@ -34,7 +34,7 @@ object WatchLink {
     fun send(ctx: Context, turn: Turn, eta: String?) {
         val d = device ?: return refresh(ctx)
         val body = JSONObject()
-            .put("d", turn.dir.toString()).put("m", turn.dist.orEmpty()).put("n", turn.meters ?: -1).put("x", turn.exit ?: 0).put("e", eta.orEmpty())
+            .put("d", turn.dir.toString()).put("m", turn.dist.orEmpty()).put("n", turn.meters ?: -1).put("t", turn.label).put("e", eta.orEmpty())
             .toString()
         // Maps re-posts every second; skip repeats and cap the Bluetooth traffic at 1 message/s
         val now = System.currentTimeMillis()

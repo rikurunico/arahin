@@ -18,6 +18,10 @@ Belum diuji di jam asli. Source ini dimasukkan ke project DevEco Studio buatanmu
 
 ## Format pesan dari HP
 
-JSON kecil: `{"d":"R","m":"116 m","n":116,"e":"4.8 km · 10:50 · 12 min"}`. `d` = `S` lurus, `L` kiri, `R` kanan, `U` putar balik, `O` bundaran (`x` = nomor pintu keluar, 0 kalau tidak diketahui); `n` = jarak dalam meter (-1 kalau tidak ada).
+JSON kecil: `{"d":"R","t":"Belok kanan","m":"116 m","n":116,"e":"4.8 km · 10:50 · 12 min"}`.
 
-Getar: kiri 1x pendek, kanan 2x pendek, putar balik 1x panjang, bundaran 1x panjang + 1x pendek, lurus senyap. Getar saat melewati 500 m, 200 m, dan 50 m menuju belokan, dan saat arah berganti kalau jaraknya sudah ≤ 500 m (belokan yang baru muncul dari jauh tidak bergetar). Bar di bawah jarak terisi mulai 300 m sebelum belokan. `TRACK` di `index.js` harus sama dengan lebar `.track` di `index.css`.
+- `d` = jenis manuver: `S` lurus/lanjut/awal rute, `L` `R` belok, `l` `r` serong/tetap di sisi/percabangan/ramp, `h` `j` belok tajam, `U` putar balik, `O` bundaran, `D` tujuan, `M` gabung jalur, `?` teks yang tidak dikenali (ditampilkan apa adanya).
+- `t` = instruksi singkat berbahasa Indonesia yang ditampilkan di jam, `m` = jarak, `n` = jarak dalam meter (-1 kalau tidak ada), `e` = ETA.
+- Ikon: `common/images/arrow-{s,l,r,sl,sr,hl,hr,u,o,d}.png`.
+
+Getar: kiri (termasuk serong dan tajam) 1x pendek, kanan 2x pendek, putar balik 1x panjang, bundaran 1x panjang + 1x pendek, tujuan 2x panjang, lurus dan gabung senyap. Getar saat melewati 500 m, 200 m, dan 50 m menuju belokan, dan saat arah berganti kalau jaraknya sudah ≤ 500 m (belokan yang baru muncul dari jauh tidak bergetar). Bar di bawah jarak terisi mulai 300 m sebelum belokan. `TRACK` di `index.js` harus sama dengan lebar `.track` di `index.css`.

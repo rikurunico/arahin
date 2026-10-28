@@ -29,7 +29,7 @@ class MapsRelay : NotificationListenerService() {
         val e = sbn.notification.extras
         val text = listOf(Notification.EXTRA_TITLE, Notification.EXTRA_TEXT, Notification.EXTRA_SUB_TEXT)
             .joinToString(" ") { e.getCharSequence(it)?.toString().orEmpty() }
-        val turn = parseTurn(text) ?: return
+        val turn = parseTurn(text) ?: fallbackTurn(e.getCharSequence(Notification.EXTRA_TITLE)?.toString().orEmpty()) ?: return
         WatchLink.send(this, turn, e.getCharSequence(Notification.EXTRA_SUB_TEXT)?.toString())
 
         // shortcut: two same-direction turns in a row buzz once, upgrade by tracking distance resets

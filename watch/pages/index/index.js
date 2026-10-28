@@ -5,13 +5,14 @@ const PHONE_PKG = 'com.arahin'
 const PHONE_FINGERPRINT = 'REPLACE_WITH_PHONE_SIGNING_FINGERPRINT'
 
 const IMG = '/common/images/'
-const DIRS = {
-  S: { instr: 'Lurus', arrow: IMG + 'arrow-s.png' },
-  L: { instr: 'Belok kiri', arrow: IMG + 'arrow-l.png' },
-  R: { instr: 'Belok kanan', arrow: IMG + 'arrow-r.png' },
-  U: { instr: 'Putar balik', arrow: IMG + 'arrow-u.png' },
-  O: { instr: 'Bundaran', arrow: IMG + 'arrow-o.png' },
+// d: S straight, L R turn, l r slight, h j sharp, U u-turn, O roundabout, D destination, M merge, ? plain text
+const ICON = {
+  S: 'arrow-s', M: 'arrow-s', '?': 'arrow-s',
+  L: 'arrow-l', R: 'arrow-r', l: 'arrow-sl', r: 'arrow-sr', h: 'arrow-hl', j: 'arrow-hr',
+  U: 'arrow-u', O: 'arrow-o', D: 'arrow-d',
 }
+const LEFT = 'Llh'
+const RIGHT = 'Rrj'
 const TRACK = 280 // px, keep equal to .track width in index.css
 const NEAR = 300 // metres where the bar starts filling
 const ALERTS = [500, 200, 50] // metres where the watch buzzes; a turn first seen farther away stays silent
@@ -19,7 +20,7 @@ const ALERTS = [500, 200, 50] // metres where the watch buzzes; a turn first see
 export default {
   data: {
     instr: 'Menunggu rute',
-    arrow: DIRS.S.arrow,
+    arrow: IMG + 'arrow-s.png',
     dist: '',
     eta: '',
     fill: 0,
@@ -48,8 +49,8 @@ export default {
     } catch (e) {
       return
     }
-    const d = DIRS[m.d]
-    if (!d) return
+    const icon = ICON[m.d]
+    if (!icon) return
 
     const turned = m.d !== this.dir && m.n >= 0 && m.n <= ALERTS[0]
     const crossed = ALERTS.some((a) => this.meters > a && m.n >= 0 && m.n <= a)
@@ -58,25 +59,33 @@ export default {
     this.meters = m.n
 
     // only touch what changed, so the UI re-renders as little as possible
-    const instr = m.d === 'O' && m.x > 0 ? 'Keluar ke-' + m.x : d.instr
-    if (this.instr !== instr) this.instr = instr
-    if (this.arrow !== d.arrow) this.arrow = d.arrow
+    const arrow = IMG + icon + '.png'
+    if (this.instr !== m.t) this.instr = m.t
+    if (this.arrow !== arrow) this.arrow = arrow
     if (this.dist !== m.m) this.dist = m.m
     if (this.eta !== m.e) this.eta = m.e
     const fill = m.n < 0 ? 0 : Math.round(TRACK * Math.max(0, Math.min(1, 1 - m.n / NEAR)))
     if (this.fill !== fill) this.fill = fill
   },
 
-  // left = 1 short, right = 2 short, u-turn = 1 long, roundabout = long + short, straight = silent
+  // left = 1 short, right = 2 short, u-turn = 1 long, roundabout = long + short, destination = 2 long;
+  // straight, merge and plain text stay silent
   buzz(dir) {
+    const again = (mode, ms) => setTimeout(() => vibrator.vibrate({ mode }), ms)
+    if (LEFT.indexOf(dir) >= 0) return vibrator.vibrate({ mode: 'short' })
+    if (RIGHT.indexOf(dir) >= 0) {
+      vibrator.vibrate({ mode: 'short' })
+      return again('short', 300)
+    }
     if (dir === 'U') return vibrator.vibrate({ mode: 'long' })
     if (dir === 'O') {
       vibrator.vibrate({ mode: 'long' })
-      return setTimeout(() => vibrator.vibrate({ mode: 'short' }), 600)
+      return again('short', 600)
     }
-    if (dir !== 'L' && dir !== 'R') return
-    vibrator.vibrate({ mode: 'short' })
-    if (dir === 'R') setTimeout(() => vibrator.vibrate({ mode: 'short' }), 300)
+    if (dir === 'D') {
+      vibrator.vibrate({ mode: 'long' })
+      return again('long', 900)
+    }
   },
 
   onDestroy() {
