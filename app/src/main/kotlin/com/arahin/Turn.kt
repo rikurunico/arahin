@@ -1,10 +1,10 @@
 package com.arahin
 
 private val MANEUVER = Regex("""u-?turn|putar balik|\b(left|kiri)\b|\b(right|kanan)\b|\b(straight|continue|lurus|terus)\b""")
-private val DISTANCE = Regex("""\d+(?:[.,]\d+)?\s?(?:km|m|mi|ft)\b""")
+private val DISTANCE = Regex("""(\d+(?:[.,]\d+)?)\s?(km|m|mi|ft)\b""")
 
-// dir: L, R, U (u-turn) or S (straight)
-data class Turn(val dir: Char, val dist: String?) {
+// dir: L, R, U (u-turn) or S (straight); meters is null when no distance was found
+data class Turn(val dir: Char, val dist: String?, val meters: Int?) {
     fun text(): String {
         val label = when (dir) {
             'U' -> "↩ PUTAR BALIK"
@@ -26,5 +26,10 @@ fun parseTurn(text: String): Turn? {
         m == "right" || m == "kanan" -> 'R'
         else -> 'S'
     }
-    return Turn(dir, DISTANCE.find(t)?.value)
+    val d = DISTANCE.find(t)
+    val meters = d?.let {
+        val unit = when (it.groupValues[2]) { "km" -> 1000.0; "mi" -> 1609.34; "ft" -> 0.3048; else -> 1.0 }
+        (it.groupValues[1].replace(',', '.').toDouble() * unit).toInt()
+    }
+    return Turn(dir, d?.value, meters)
 }

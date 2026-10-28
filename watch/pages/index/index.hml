@@ -1,6 +1,11 @@
 <div class="page">
-  <text class="instr">{{ instr }}</text>
-  <image class="arrow" src="{{ arrow }}"></image>
   <text class="dist">{{ dist }}</text>
-  <text class="eta">{{ eta }}</text>
+  <div class="track">
+    <div class="fill" style="width: {{ fill }}px;"></div>
+  </div>
+  <image class="arrow" src="{{ arrow }}"></image>
+  <text class="instr">{{ instr }}</text>
+  <div class="pill">
+    <text class="eta">{{ eta }}</text>
+  </div>
 </div>

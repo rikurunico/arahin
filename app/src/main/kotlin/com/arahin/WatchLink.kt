@@ -15,6 +15,8 @@ private const val WATCH_FINGERPRINT = "REPLACE_WITH_WATCH_SIGNING_FINGERPRINT"
 
 object WatchLink {
     @Volatile private var device: Device? = null
+    private var lastBody = ""
+    private var lastAt = 0L
 
     fun authorize(activity: Activity, done: () -> Unit) {
         HiWear.getAuthClient(activity).requestPermission(object : AuthCallback {
@@ -31,11 +33,18 @@ object WatchLink {
 
     fun send(ctx: Context, turn: Turn, eta: String?) {
         val d = device ?: return refresh(ctx)
-        val body = JSONObject().put("d", turn.dir.toString()).put("m", turn.dist.orEmpty()).put("e", eta.orEmpty())
+        val body = JSONObject()
+            .put("d", turn.dir.toString()).put("m", turn.dist.orEmpty()).put("n", turn.meters ?: -1).put("e", eta.orEmpty())
+            .toString()
+        // Maps re-posts every second; skip repeats and cap the Bluetooth traffic at 1 message/s
+        val now = System.currentTimeMillis()
+        if (body == lastBody || now - lastAt < 1000) return
+        lastBody = body
+        lastAt = now
         val p2p = HiWear.getP2pClient(ctx)
         p2p.setPeerPkgName(WATCH_PKG)
         p2p.setPeerFingerPrint(WATCH_FINGERPRINT)
-        p2p.send(d, Message.Builder().setPayload(body.toString().toByteArray()).build(), object : SendCallback {
+        p2p.send(d, Message.Builder().setPayload(body.toByteArray()).build(), object : SendCallback {
             override fun onSendResult(resultCode: Int) {}
             override fun onSendProgress(progress: Long) {}
         })

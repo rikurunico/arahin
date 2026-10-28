@@ -11,6 +11,9 @@ const DIRS = {
   R: { instr: 'Belok kanan', arrow: IMG + 'arrow-r.png' },
   U: { instr: 'Putar balik', arrow: IMG + 'arrow-u.png' },
 }
+const TRACK = 280 // px, keep equal to .track width in index.css
+const NEAR = 300 // metres where the bar starts filling
+const ALERTS = [200, 50] // metres where the watch buzzes again
 
 export default {
   data: {
@@ -18,9 +21,12 @@ export default {
     arrow: DIRS.S.arrow,
     dist: '',
     eta: '',
+    fill: 0,
   },
 
   onInit() {
+    this.dir = ''
+    this.meters = -1
     this.p2pClient = new P2pClient()
     this.p2pClient.setPeerPkgName(PHONE_PKG)
     this.p2pClient.setPeerFingerPrint(PHONE_FINGERPRINT)
@@ -43,11 +49,28 @@ export default {
     }
     const d = DIRS[m.d]
     if (!d) return
-    if (d.arrow !== this.arrow) vibrator.vibrate({ mode: 'short' })
-    this.instr = d.instr
-    this.arrow = d.arrow
-    this.dist = m.m || ''
-    this.eta = m.e || ''
+
+    const turned = m.d !== this.dir
+    const crossed = ALERTS.some((a) => this.meters > a && m.n >= 0 && m.n <= a)
+    if (turned || crossed) this.buzz(m.d)
+    this.dir = m.d
+    this.meters = m.n
+
+    // only touch what changed, so the UI re-renders as little as possible
+    if (this.instr !== d.instr) this.instr = d.instr
+    if (this.arrow !== d.arrow) this.arrow = d.arrow
+    if (this.dist !== m.m) this.dist = m.m
+    if (this.eta !== m.e) this.eta = m.e
+    const fill = m.n < 0 ? 0 : Math.round(TRACK * Math.max(0, Math.min(1, 1 - m.n / NEAR)))
+    if (this.fill !== fill) this.fill = fill
+  },
+
+  // left = 1 short, right = 2 short, u-turn = 1 long, straight = silent: readable without looking
+  buzz(dir) {
+    if (dir === 'U') return vibrator.vibrate({ mode: 'long' })
+    if (dir !== 'L' && dir !== 'R') return
+    vibrator.vibrate({ mode: 'short' })
+    if (dir === 'R') setTimeout(() => vibrator.vibrate({ mode: 'short' }), 300)
   },
 
   onDestroy() {
