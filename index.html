@@ -4,7 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Rekaman navigasi Google Maps asli diputar di dua layar Huawei Watch Fit 4: notifikasi mirror dan app jam Arahin.">
-<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}.links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px }
+.links a { font: 600 15px var(--body); text-decoration: none; border-radius: 10px; padding: 10px 16px; border: 1px solid var(--line); color: var(--ink); background: var(--panel) }
+.links a.dl { background: #ffc700; border-color: #ffc700; color: #1d1a00 }
+.links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+</style>
 <title>Arahin Watch Preview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -101,6 +105,10 @@ input[type=range] { width: 100%; max-width: 520px; accent-color: var(--maps) }
   <header>
     <h1>Arahin di Huawei Watch Fit 4</h1>
     <p>Rekaman nyata dari Google Maps Android (emulator Pixel 8, GPS disimulasikan di Jakarta), diputar di dua cara Arahin tampil di jam. Kedua layar memakai data yang sama di tiap detik.</p>
+    <div class="links">
+      <a class="dl" href="https://github.com/rikurunico/arahin/releases/latest/download/arahin.apk">⬇ Unduh APK (Android 8.0+)</a>
+      <a href="https://github.com/rikurunico/arahin">Source di GitHub</a>
+    </div>
   </header>
 
   <div class="devices">
