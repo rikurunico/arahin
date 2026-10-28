@@ -47,6 +47,16 @@ class TurnTest {
     @Test fun idExitLeftLane() = assertEquals('l', dir("Gunakan lajur kiri untuk mengambil jalan keluar menuju Jagorawi"))
     @Test fun idExitNoSide() = assertEquals('E', dir("Ambil jalan keluar menuju Bogor Kebun Raya"))
     @Test fun idUTurn() = assertEquals('U', dir("Putar balik 450 m"))
+    @Test fun idRoundaboutSecondExit() = assertEquals(Turn('O', null, null, 2, "Keluar ke-2"), parseTurn("Di bundaran, ambil jalan keluar ke-2 menuju Jl. M.H. Thamrin"))
+    @Test fun idRoundaboutThirdExit() = assertEquals(3, parseTurn("Di bundaran, ambil jalan keluar ke-3 menuju Jl. Medan Merdeka Sel.")?.exit)
+    @Test fun idLeaveRoundabout() = assertEquals('Q', dir("Keluar bundaran ke Jl. Jenderal Sudirman Lewati Mandarin Oriental Jakarta (di kiri)"))
+    @Test fun idExitWithNumber() = assertEquals('E', dir("Ambil jalan keluar 40 menuju Bogor/Kebun Raya"))
+    @Test fun idRampToll() = assertEquals('r', dir("Ambil jalan di kanan ke JalanTol"))
+    @Test fun idHeadNorth() = assertEquals('S', dir("Ke arah utara Jl. Panglima Polim"))
+    @Test fun idKeepRightContinue() = assertEquals('r', dir("Terus kanan untuk melanjutkan di Jl. Jenderal Sudirman"))
+    @Test fun idStraightToRoad() = assertEquals('S', dir("Terus lurus ke Jl. Jenderal Sudirman / Jl. Sisingamangaraja"))
+    @Test fun idTurnRightNoPreposition() = assertEquals('R', dir("Belok kanan Jl. Terowongan Semanggi"))
+
     // real Google Maps (hl=en) steps
     @Test fun enHead() = assertEquals('S', dir("Head toward Jl. Imam Bonjol"))
     @Test fun enLeaveRoundabout() = assertEquals(Turn('Q', "2.2 km", 2200, null, "Keluar bundaran"), parseTurn("Exit the roundabout onto Jl. Jenderal Sudirman Pass by Mandarin Oriental, Jakarta (on the left) 2.2 km"))

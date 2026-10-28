@@ -19,7 +19,7 @@ private val RULES = listOf(
     Rule('D', Regex("""destination|tujuan|arrive|tiba di""")),
     Rule('M', Regex("""merge|bergabung|get on""")),
     Rule('E', Regex("""ambil jalan keluar|take exit|take the exit""")),
-    Rule('S', Regex("""\b(?:straight|continue|head|lurus|terus|teruskan|lanjutkan|melanjutkan|mengemudi|ikuti|menuju)\b|stay on|middle lane|tetap di|lajur tengah|ambil arah""")),
+    Rule('S', Regex("""\b(?:straight|continue|head|lurus|terus|teruskan|lanjutkan|melanjutkan|mengemudi|ikuti|menuju)\b|stay on|middle lane|tetap di|lajur tengah|ambil arah|ke arah""")),
 )
 private val NOTE = Regex("""\([^)]*\)""")
 private val DISTANCE = Regex("""(\d+(?:[.,]\d+)?)\s?(km|m|mi|ft)\b""")

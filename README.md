@@ -1,5 +1,9 @@
 # Arahin
 
+![Layar jam Arahin: semua jenis navigasi](docs/watch-screens.png)
+
+_Pratinjau semua layar jam (render di browser dari HTML/CSS yang sama dengan aplikasi jam, bukan foto jam asli)._
+
 Teruskan petunjuk belok Google Maps ke smartwatch (dibuat untuk Huawei Watch Fit 4), jadi cukup lirik pergelangan tangan saat touring.
 
 Arahin membaca notifikasi navigasi Google Maps, lalu memposting notifikasi singkat seperti `◀ KIRI 200 m` atau `▶ KANAN 1,5 km`. Jam menampilkannya lewat notifikasi mirroring bawaan (Huawei Health, Wear OS, dll.), tanpa app di jam.
