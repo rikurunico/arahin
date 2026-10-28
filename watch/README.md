@@ -20,7 +20,7 @@ Belum diuji di jam asli. Source ini dimasukkan ke project DevEco Studio buatanmu
 
 JSON kecil: `{"d":"R","t":"Belok kanan","m":"116 m","n":116,"x":0,"e":"4.8 km · 10:50 · 12 min"}`.
 
-- `d` = jenis manuver: `S` lurus/lanjut/awal rute, `L` `R` belok, `l` `r` serong/tetap di sisi/percabangan/ramp, `h` `j` belok tajam, `U` putar balik, `O` bundaran, `D` tujuan, `M` gabung jalur, `E` ambil jalan keluar (sisi tidak diketahui), `?` teks yang tidak dikenali (ditampilkan apa adanya).
+- `d` = jenis manuver: `S` lurus/lanjut/awal rute, `L` `R` belok, `l` `r` serong/tetap di sisi/percabangan/ramp, `h` `j` belok tajam, `U` putar balik, `O` bundaran, `D` tujuan, `M` gabung jalur, `E` ambil jalan keluar (sisi tidak diketahui), `Q` keluar dari bundaran, `?` teks yang tidak dikenali (ditampilkan apa adanya).
 - `t` = instruksi singkat berbahasa Indonesia yang ditampilkan di jam, `m` = jarak, `n` = jarak dalam meter (-1 kalau tidak ada), `x` = nomor pintu keluar bundaran (0 kalau tidak ada), `e` = ETA.
 - Ikon: `common/images/arrow-{s,l,r,sl,sr,hl,hr,u,o,o1,o2,o3,d}.png`. Ikon bundaran `o1` `o2` `o3` menggambar bundaran 4 lengan dari bawah: pintu yang harus diambil terang dengan panah, pintu lain redup. Itu skema, bukan bentuk bundaran sebenarnya. `DRIVE_LEFT` di `index.js` (default `true`, lalu lintas kiri) menentukan pintu 1 di kiri atau kanan.
 

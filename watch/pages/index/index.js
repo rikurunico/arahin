@@ -5,9 +5,9 @@ const PHONE_PKG = 'com.arahin'
 const PHONE_FINGERPRINT = 'REPLACE_WITH_PHONE_SIGNING_FINGERPRINT'
 
 const IMG = '/common/images/'
-// d: S straight, L R turn, l r slight, h j sharp, U u-turn, O roundabout, D destination, M merge, E exit, ? plain text
+// d: S straight, L R turn, l r slight, h j sharp, U u-turn, O roundabout, D destination, M merge, E exit, Q leaving a roundabout, ? plain text
 const ICON = {
-  S: 'arrow-s', M: 'arrow-s', E: 'arrow-s', '?': 'arrow-s',
+  S: 'arrow-s', M: 'arrow-s', E: 'arrow-s', Q: 'arrow-s', '?': 'arrow-s',
   L: 'arrow-l', R: 'arrow-r', l: 'arrow-sl', r: 'arrow-sr', h: 'arrow-hl', j: 'arrow-hr',
   U: 'arrow-u', O: 'arrow-o', D: 'arrow-d',
 }
@@ -72,7 +72,7 @@ export default {
   },
 
   // left = 1 short, right = 2 short, u-turn = 1 long, roundabout = long + short, destination = 2 long;
-  // straight, merge, exit and plain text stay silent
+  // straight, merge, exits and plain text stay silent
   buzz(dir) {
     const again = (mode, ms) => setTimeout(() => vibrator.vibrate({ mode }), ms)
     if (LEFT.indexOf(dir) >= 0) return vibrator.vibrate({ mode: 'short' })
