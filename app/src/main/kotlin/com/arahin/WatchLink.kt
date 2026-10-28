@@ -31,11 +31,14 @@ object WatchLink {
         }
     }
 
+    // the exact JSON the watch's index.js parses
+    fun payload(turn: Turn, eta: String?): String = JSONObject()
+        .put("d", turn.dir.toString()).put("m", turn.dist.orEmpty()).put("n", turn.meters ?: -1).put("t", turn.label).put("x", turn.exit ?: 0).put("e", eta.orEmpty())
+        .toString()
+
     fun send(ctx: Context, turn: Turn, eta: String?) {
         val d = device ?: return refresh(ctx)
-        val body = JSONObject()
-            .put("d", turn.dir.toString()).put("m", turn.dist.orEmpty()).put("n", turn.meters ?: -1).put("t", turn.label).put("x", turn.exit ?: 0).put("e", eta.orEmpty())
-            .toString()
+        val body = payload(turn, eta)
         // Maps re-posts every second; skip repeats and cap the Bluetooth traffic at 1 message/s
         val now = System.currentTimeMillis()
         if (body == lastBody || now - lastAt < 1000) return
