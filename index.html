@@ -83,7 +83,7 @@ header p { margin: 0; color: var(--muted); max-width: 72ch }
 .card.pop { animation: pop .35s ease-out }
 @keyframes pop { from { transform: translateY(28px); opacity: 0 } }
 .card .app { display: flex; align-items: center; gap: 12px; color: #a8abb0; font-size: 22px }
-.card .app i { width: 34px; height: 34px; border-radius: 50%; background: #188038; display: grid; place-items: center; color: #fff; font-style: normal; font-size: 18px }
+.card .app img { width: 34px; height: 34px; border-radius: 50% }
 .card .app span:last-child { margin-left: auto }
 .card .msg { color: #fff; font-size: 44px; font-weight: 700; line-height: 1.12; overflow-wrap: anywhere }
 .card .sub { color: #a8abb0; font-size: 34px; line-height: 1.1 }
@@ -140,7 +140,7 @@ input[type=range] { width: 100%; max-width: 520px; accent-color: var(--maps) }
       <div class="case" id="caseN"><div class="box"><div class="screen">
         <div class="clock" id="clock">18.32</div>
         <div class="card idle" id="card">
-          <div class="app"><i>➤</i><span>Arahin</span><span id="ago">sekarang</span></div>
+          <div class="app"><img src="icon-192.png" alt=""><span>Arahin</span><span id="ago">sekarang</span></div>
           <div class="msg" id="msg">Menunggu belokan</div>
           <div class="sub" id="sub"></div>
         </div>
