@@ -2,6 +2,7 @@ package com.arahin
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -26,5 +27,17 @@ class WatchStatusTest {
 
     @Test fun `unknown codes still show the code`() {
         assertEquals("Gagal (kode 999, cek izin).", LinkState.Failed(999, "cek izin").label())
+    }
+
+    @Test fun `watch version code reads as major dot minor dot patch`() {
+        assertEquals("1.0.0", watchVersionName(1000000))
+        assertEquals("1.0.3", watchVersionName(1000003))
+        assertEquals("1.2.14", watchVersionName(1002014))
+    }
+
+    @Test fun `version line tells installed, missing and unknown`() {
+        assertEquals("App jam v1.0.3.", watchVersionLine(1000003))
+        assertEquals("App Arahin belum terpasang di jam.", watchVersionLine(-1))
+        assertNull(watchVersionLine(null))
     }
 }

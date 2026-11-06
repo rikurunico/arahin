@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.NotificationManager
 import android.content.ComponentName
+import android.content.pm.ApplicationInfo
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -73,7 +74,9 @@ class MainActivity : Activity() {
                 Kind.OPTIONAL, "Layar navigasi di jam",
                 "App Arahin di jam: panah besar, getar kiri dan kanan beda. Perlu izin Wear Engine dari Huawei. Kalau notifikasi sudah cukup, lewati aja.",
                 "Hubungkan", { WatchLink.state.linked },
-            ) { WatchLink.authorize(this) }.apply { live = { WatchLink.state.label() } },
+            ) { WatchLink.authorize(this) }.apply {
+                live = { listOfNotNull(WatchLink.state.label(), watchVersionLine(WatchLink.watchVersion)).joinToString("\n") }
+            },
         )
     }
 
@@ -83,6 +86,7 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         list = findViewById(R.id.steps)
+        findViewById<TextView>(R.id.version).text = appVersion()
         steps.forEach { s ->
             val row = layoutInflater.inflate(R.layout.step, list, false)
             row.findViewById<TextView>(R.id.title).text = s.title
@@ -194,9 +198,20 @@ class MainActivity : Activity() {
         notificationTurn(dist, "", IconMatch(dir, exit))?.let {
             val info = "$min min · $total · $eta ETA"
             TurnNotice.post(this, it)
-            WatchLink.send(this, it, info, manual = true) // also the watch app, so the Wear Engine link can be tried without driving
+            // also the watch app, so the Wear Engine link can be tried without driving; open() re-sends this turn
+            // once the app has started, in case it was closed
+            WatchLink.send(this, it, info, manual = true)
+            WatchLink.open(this)
         }
-        toast("Terkirim, cek jam kamu")
+        toast("Notifikasi dikirim. Status app jam ada di langkah 6")
+    }
+
+    // which build is on the phone, so a stale install is easy to spot: version, debug or release, and when it was installed
+    private fun appVersion(): String {
+        val info = packageManager.getPackageInfo(packageName, 0)
+        val kind = if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) "debug" else "release"
+        val at = SimpleDateFormat("d MMM HH.mm", Locale("id")).format(Date(info.lastUpdateTime))
+        return "v${info.versionName} ($kind) · dipasang $at"
     }
 
     private fun isXiaomi() = Build.MANUFACTURER.equals("Xiaomi", ignoreCase = true)

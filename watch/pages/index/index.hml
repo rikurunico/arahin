@@ -1,4 +1,9 @@
 <div class="page">
+  <div class="status">
+    <text class="clock">{{ clock }}</text>
+    <text class="small">{{ watchBattery }}</text>
+    <text class="small">{{ battery }}</text>
+  </div>
   <text class="dist" style="color: {{ distColor }};">{{ dist }}</text>
   <div class="track">
     <div class="fill" style="width: {{ fill }}px;"></div>
@@ -7,7 +12,6 @@
     <image class="arrow" src="{{ arrow }}"></image>
   </div>
   <text class="instr" style="font-size: {{ instrSize }}px;">{{ instr }}</text>
-  <div class="pill" if="{{ eta }}">
-    <text class="eta">{{ eta }}</text>
-  </div>
+  <text class="eta">{{ eta }}</text>
+  <text class="small">{{ version }}</text>
 </div>

@@ -1,4 +1,5 @@
-/* Everything sits inside the circle that fits the screen, so round watches do not clip the corners */
+/* Sizes are design pixels (the page is 454 wide), so a Watch Fit 4 (480x408) has only about 386 of height and a round
+   watch loses its corners. Everything stays well under that and inside the middle of the screen. */
 .page {
   width: 100%;
   height: 100%;
@@ -8,60 +9,72 @@
   justify-content: center;
 }
 
-.dist {
-  font-size: 60px;
+/* clock and the two batteries in one line, the batteries gray so the turn stays the focus */
+.status {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.clock {
+  font-size: 26px;
   color: #ffffff;
   text-align: center;
-  margin-bottom: 6px;
+}
+
+.small {
+  font-size: 18px;
+  color: #a0a0a8;
+  text-align: center;
+  margin-left: 10px;
+}
+
+.dist {
+  font-size: 50px;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 2px;
 }
 
 .track {
-  width: 160px;
-  height: 10px;
-  border-radius: 5px;
+  width: 140px;
+  height: 8px;
+  border-radius: 4px;
   background-color: #2a2a2e;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .fill {
-  height: 10px;
-  border-radius: 5px;
+  height: 8px;
+  border-radius: 4px;
   background-color: #ffc700;
 }
 
 .disc {
-  width: 200px;
-  height: 200px;
-  border-radius: 100px;
+  width: 150px;
+  height: 150px;
+  border-radius: 75px;
   background-color: #17181b;
   align-items: center;
   justify-content: center;
 }
 
 .arrow {
-  width: 160px;
-  height: 160px;
+  width: 124px;
+  height: 124px;
 }
 
 .instr {
-  font-size: 32px;
+  font-size: 26px;
   color: #ffc700;
   text-align: center;
-  margin-top: 8px;
-}
-
-.pill {
-  height: 36px;
-  padding: 0 18px;
-  border-radius: 18px;
-  background-color: #1c1c1f;
-  align-items: center;
-  justify-content: center;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .eta {
-  font-size: 22px;
+  font-size: 18px;
   color: #d0d0d8;
   text-align: center;
+  margin-top: 4px;
 }

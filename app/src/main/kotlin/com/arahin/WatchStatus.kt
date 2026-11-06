@@ -39,3 +39,13 @@ internal fun failureText(code: Int) = when (code) {
     Code.ERROR_CODE_COMM_FAIL -> "Pesan gagal terkirim. Nyalakan layar jam dan buka app Arahin di jam"
     else -> "Gagal"
 }
+
+// The watch app's config.json version code is major * 1,000,000 + minor * 1,000 + patch, so 1000003 is "1.0.3".
+fun watchVersionName(code: Int) = "${code / 1_000_000}.${code / 1_000 % 1_000}.${code % 1_000}"
+
+// Which watch app build is installed, so a stale install is spotted without looking at the watch; -1 = not installed.
+fun watchVersionLine(code: Int?): String? = when {
+    code == null -> null
+    code < 0 -> "App Arahin belum terpasang di jam."
+    else -> "App jam v${watchVersionName(code)}."
+}

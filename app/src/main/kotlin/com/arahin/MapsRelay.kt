@@ -38,6 +38,7 @@ class MapsRelay : NotificationListenerService() {
         if (!alert) return
 
         TurnNotice.post(this, turn)
+        WatchLink.open(this)
     }
 
     private fun signatureOf(bmp: Bitmap): IntArray {

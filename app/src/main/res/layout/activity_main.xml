@@ -53,6 +53,14 @@
                     android:text="@string/tagline"
                     android:textColor="@color/muted"
                     android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/muted"
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 

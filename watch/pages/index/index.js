@@ -1,5 +1,6 @@
 import { P2pClient } from '../wearengine.js'
 import vibrator from '@system.vibrator'
+import battery from '@system.battery'
 
 const PHONE_PKG = 'com.arahin'
 const PHONE_FINGERPRINT = '28DAEBEF9CCBF3125D209F4477F65BD2FEB45065667379C50801F415DFD037D9'
@@ -14,7 +15,7 @@ const ICON = {
 const DRIVE_LEFT = true // Indonesia: roundabouts run clockwise, exit 1 is on the left; set false for right-hand traffic
 const LEFT = 'Llh'
 const RIGHT = 'Rrj'
-const TRACK = 160 // px, keep equal to .track width in index.css
+const TRACK = 140 // px, keep equal to .track width in index.css
 const NEAR = 300 // metres where the bar starts filling
 const ALERTS = [500, 200, 50] // metres where the watch buzzes; a turn first seen farther away stays silent
 // the distance turns yellow within 200 m and orange within 50 m, so a glance tells how close the turn is
@@ -22,16 +23,21 @@ const COLD = '#ffffff'
 const WARM = '#ffc700'
 const HOT = '#ff6a3d'
 const LONG_INSTR = 16 // characters; longer instructions get a smaller font so they stay on screen
+const VERSION = 'v1.0.5' // keep equal to app.version.name in the module's config.json (code 1000005)
 
 export default {
   data: {
     instr: 'Menunggu rute',
-    instrSize: 32,
+    instrSize: 26,
     arrow: IMG + 'arrow-s.png',
     dist: '',
     distColor: COLD,
     eta: '',
     fill: 0,
+    clock: '',
+    battery: '', // phone battery, sent along with every turn
+    watchBattery: '',
+    version: VERSION, // always on screen for now, so a photo of the watch tells which install it is
   },
 
   onInit() {
@@ -48,6 +54,25 @@ export default {
         if (data && !data.isFileType) page.show(data)
       },
     })
+    // the watch battery moves slowly, so ask for it once a minute
+    this.readBattery()
+    this.batteryTimer = setInterval(() => page.readBattery(), 60000)
+  },
+
+  readBattery() {
+    const page = this
+    try {
+      battery.getStatus({
+        success(data) {
+          page.watchBattery = 'Jam ' + Math.round(data.level * 100) + '%'
+        },
+        fail() {
+          page.watchBattery = ''
+        },
+      })
+    } catch (e) {
+      page.watchBattery = ''
+    }
   },
 
   show(raw) {
@@ -71,13 +96,17 @@ export default {
     // only touch what changed, so the UI re-renders as little as possible
     const arrow = IMG + icon + '.png'
     if (this.instr !== m.t) this.instr = m.t
-    const size = m.t.length > LONG_INSTR ? 26 : 32
+    const size = m.t.length > LONG_INSTR ? 22 : 26
     if (this.instrSize !== size) this.instrSize = size
     if (this.arrow !== arrow) this.arrow = arrow
     if (this.dist !== m.m) this.dist = m.m
     const color = m.n < 0 || m.n > ALERTS[1] ? COLD : m.n > ALERTS[2] ? WARM : HOT
     if (this.distColor !== color) this.distColor = color
     if (this.eta !== m.e) this.eta = m.e
+    // the clock comes from the phone: the watch's own Date is not trusted on this engine
+    if (m.c && this.clock !== m.c) this.clock = m.c
+    const battery = m.b >= 0 ? 'HP ' + m.b + '%' : ''
+    if (this.battery !== battery) this.battery = battery
     const fill = m.n < 0 ? 0 : Math.round(TRACK * Math.max(0, Math.min(1, 1 - m.n / NEAR)))
     if (this.fill !== fill) this.fill = fill
   },
@@ -103,6 +132,7 @@ export default {
   },
 
   onDestroy() {
+    clearInterval(this.batteryTimer)
     this.p2pClient.unregisterReceiver({ onSuccess() {}, onFailure() {} })
   },
 }
