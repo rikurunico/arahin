@@ -33,7 +33,7 @@ class MapsRelay : NotificationListenerService() {
         if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
             Log.d("Arahin", "raw=[$title | $text | $eta] icon=${bmp?.let(::dumpIcon)}:$icon alert=$alert -> ${WatchLink.payload(turn, eta)}")
         }
-        WatchLink.send(this, turn, eta)
+        WatchLink.send(this, turn, arrivalLabel(eta))
 
         if (!alert) return
 

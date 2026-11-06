@@ -23,7 +23,7 @@ const COLD = '#ffffff'
 const WARM = '#ffc700'
 const HOT = '#ff6a3d'
 const LONG_INSTR = 16 // characters; longer instructions get a smaller font so they stay on screen
-const VERSION = 'v1.0.5' // keep equal to app.version.name in the module's config.json (code 1000005)
+const VERSION = 'v1.0.6' // keep equal to app.version.name in the module's config.json (code 1000006)
 
 export default {
   data: {
@@ -34,9 +34,7 @@ export default {
     distColor: COLD,
     eta: '',
     fill: 0,
-    clock: '',
-    battery: '', // phone battery, sent along with every turn
-    watchBattery: '',
+    status: '', // clock and the two batteries, one line (see showStatus)
     version: VERSION, // always on screen for now, so a photo of the watch tells which install it is
   },
 
@@ -54,6 +52,9 @@ export default {
         if (data && !data.isFileType) page.show(data)
       },
     })
+    this.clockPart = ''
+    this.watchPart = ''
+    this.phonePart = ''
     // the watch battery moves slowly, so ask for it once a minute
     this.readBattery()
     this.batteryTimer = setInterval(() => page.readBattery(), 60000)
@@ -64,15 +65,22 @@ export default {
     try {
       battery.getStatus({
         success(data) {
-          page.watchBattery = 'Jam ' + Math.round(data.level * 100) + '%'
+          page.watchPart = 'Jam ' + Math.round(data.level * 100) + '%'
+          page.showStatus()
         },
         fail() {
-          page.watchBattery = ''
+          page.watchPart = ''
         },
       })
     } catch (e) {
-      page.watchBattery = ''
+      page.watchPart = ''
     }
+  },
+
+  // clock (from the phone), watch battery and phone battery as one text, empty parts left out
+  showStatus() {
+    const status = [this.clockPart, this.watchPart, this.phonePart].filter((p) => p).join('   ')
+    if (this.status !== status) this.status = status
   },
 
   show(raw) {
@@ -104,9 +112,9 @@ export default {
     if (this.distColor !== color) this.distColor = color
     if (this.eta !== m.e) this.eta = m.e
     // the clock comes from the phone: the watch's own Date is not trusted on this engine
-    if (m.c && this.clock !== m.c) this.clock = m.c
-    const battery = m.b >= 0 ? 'HP ' + m.b + '%' : ''
-    if (this.battery !== battery) this.battery = battery
+    this.clockPart = m.c || ''
+    this.phonePart = m.b >= 0 ? 'HP ' + m.b + '%' : ''
+    this.showStatus()
     const fill = m.n < 0 ? 0 : Math.round(TRACK * Math.max(0, Math.min(1, 1 - m.n / NEAR)))
     if (this.fill !== fill) this.fill = fill
   },

@@ -73,6 +73,15 @@ class TurnTest {
     @Test fun fallbackKeepsText() = assertEquals("Rute tercepat tersedia", fallbackTurn("  Rute tercepat tersedia ")?.label)
     @Test fun fallbackBlank() = assertNull(fallbackTurn("   "))
 
+    @Test fun arrivalFromEnglishMaps() = assertEquals("Tiba 19.27", arrivalLabel("Arrive 7:27 PM"))
+    @Test fun arrivalNoonAndMidnight() {
+        assertEquals("Tiba 12.05", arrivalLabel("Arrive 12:05 PM"))
+        assertEquals("Tiba 00.05", arrivalLabel("Arrive 12:05 AM"))
+    }
+    @Test fun arrivalAlready24Hour() = assertEquals("Tiba 19.27", arrivalLabel("Tiba 19.27"))
+    @Test fun arrivalMissing() = assertEquals("", arrivalLabel(null))
+    @Test fun arrivalWithoutTimeStaysAsIs() = assertEquals("Rute baru", arrivalLabel(" Rute baru "))
+
     // some watches cannot draw arrow or flag glyphs, so the notification title is plain ASCII for every maneuver
     @Test fun titlesAreAscii() {
         "LRlrhjUODMEQS".forEach { d ->

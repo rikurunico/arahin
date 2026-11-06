@@ -91,3 +91,18 @@ fun notificationTurn(title: String, text: String, icon: IconMatch?): Turn? {
     val (dist, meters) = distance(line.lowercase())
     return Turn(icon.dir, dist, meters, icon.exit, labelOf(icon.dir, line.lowercase(), icon.exit))
 }
+
+private val CLOCK = Regex("""(\d{1,2})[:.](\d{2})\s*([AaPp][Mm])?""")
+
+// The arrival line for the watch. Maps words it "Arrive 7:27 PM" (or the Indonesian equivalent); the watch shows
+// "Tiba 19.27", 24-hour like the rest of the app. Text without a time is passed on as it came.
+fun arrivalLabel(raw: String?): String {
+    val text = raw?.trim().orEmpty()
+    val m = CLOCK.find(text) ?: return text
+    var hour = m.groupValues[1].toInt()
+    when (m.groupValues[3].lowercase()) {
+        "pm" -> if (hour < 12) hour += 12
+        "am" -> if (hour == 12) hour = 0
+    }
+    return "Tiba %02d.%s".format(hour, m.groupValues[2])
+}
