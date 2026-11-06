@@ -1,0 +1,13 @@
+{
+  "name": "Arahin",
+  "short_name": "Arahin",
+  "description": "Petunjuk belok Google Maps di jam tanganmu",
+  "start_url": "./",
+  "display": "browser",
+  "background_color": "#16181a",
+  "theme_color": "#16181a",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
