@@ -2,7 +2,7 @@ import { P2pClient } from '../wearengine.js'
 import vibrator from '@system.vibrator'
 
 const PHONE_PKG = 'com.arahin'
-const PHONE_FINGERPRINT = 'REPLACE_WITH_PHONE_SIGNING_FINGERPRINT'
+const PHONE_FINGERPRINT = '28DAEBEF9CCBF3125D209F4477F65BD2FEB45065667379C50801F415DFD037D9'
 
 const IMG = '/common/images/'
 // d: S straight, L R turn, l r slight, h j sharp, U u-turn, O roundabout, D destination, M merge, E exit, Q leaving a roundabout, ? plain text

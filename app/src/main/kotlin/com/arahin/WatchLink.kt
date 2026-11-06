@@ -11,7 +11,7 @@ import com.huawei.wearengine.p2p.SendCallback
 import org.json.JSONObject
 
 private const val WATCH_PKG = "com.arahin.watch"
-private const val WATCH_FINGERPRINT = "REPLACE_WITH_WATCH_SIGNING_FINGERPRINT"
+private const val WATCH_FINGERPRINT = "0AA3F3346209632D66BD054693AD929C4830A470B94701DFEA0E3B711035EB1D"
 
 object WatchLink {
     @Volatile private var device: Device? = null

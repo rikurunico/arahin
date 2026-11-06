@@ -2,19 +2,38 @@
 
 Layar navigasi di jam: instruksi, panah besar, jarak, dan ETA, dikirim dari app HP lewat Wear Engine.
 
-Belum dicoba di jam asli. Masukkan source ini ke project DevEco Studio kamu sendiri, karena `config.json`, signing, dan `wearengine.js` dibuat atau diunduh di sana.
+Sudah berhasil dipasang di Huawei Watch Fit 4 (HarmonyOS 6.1.0) dengan DevEco Studio 6.1.1, template Lite Wearable (JS), dan `wearengine.js` 5.0.2.306. Masukkan source ini ke project DevEco Studio kamu sendiri, karena `config.json`, signing, dan `wearengine.js` dibuat atau diunduh di sana.
 
 ## Pasang
 
-1. DevEco Studio: buat project **Lite Wearable** (JS), bundle name `com.arahin.watch`, Compile SDK 10.
-2. Unduh `wearengine.js` ([Wear Engine SDK, Lite Wearable](https://developer.huawei.com/consumer/en/doc/connectivity-guides/integrating-fitnesstwatch-sdk-0000001052859174)) ke `entry/src/main/js/default/pages/`.
-3. Salin isi folder `pages/index/` di sini ke `entry/src/main/js/default/pages/index/`, lalu salin folder `common/images/` (empat `arrow-*.png`) ke `entry/src/main/js/default/common/`.
+1. DevEco Studio: buat project **Lite Wearable** (JS, template Empty), bundle name `com.arahin.watch`. Lalu di `build-profile.json5` set `"compatibleSdkVersion": "5.1.0(18)"`. Ini yang paling gampang terlewat, lihat [Catatan pengerjaan](#catatan-pengerjaan).
+2. Unduh `wearengine.js` ([Wear Engine SDK, Lite Wearable](https://developer.huawei.com/consumer/en/doc/connectivity-guides/integrating-fitnesstwatch-sdk-0000001052859174)) ke `entry/src/main/js/MainAbility/pages/`.
+3. Salin isi folder `pages/index/` di sini ke `entry/src/main/js/MainAbility/pages/index/`, lalu salin folder `common/images/` (empat `arrow-*.png`) ke `entry/src/main/js/MainAbility/common/`.
 4. Di `config.json` modul, tambahkan (fingerprint = SHA-256 sertifikat signing app HP):
    ```json
    "metaData": { "customizeData": [{ "name": "supportLists", "value": "com.arahin:<PHONE_FINGERPRINT>", "extra": "" }] }
    ```
 5. Isi `PHONE_FINGERPRINT` di `index.js` dengan nilai yang sama.
-6. Daftarkan jam sebagai debug device di AppGallery Connect, tanda tangani, lalu pasang lewat Huawei Health + DevEco Assistant.
+6. Siapkan signing:
+   - **Build → Generate Key and CSR** di DevEco, hasilnya `.p12` dan `.csr`.
+   - Ambil UDID jam dari app **DevEco Assistant** di HP (tab Lite Wearable, jam harus tersambung lewat Huawei Health).
+   - Di AppGallery Connect → *Certificates, app IDs, and profiles*: tambah jam di **Devices** (tipe Sports watch), upload `.csr` sebagai sertifikat **Debug**, buat **App ID** `com.arahin.watch`, lalu buat **Profile** tipe Debug yang berisi app, sertifikat, dan jam itu. Unduh `.cer` dan `.p7b`.
+   - Di DevEco: **File → Project Structure → Signing Configs**, matikan "Automatically generate signature", isi `.p12`, password, alias, `.p7b`, dan `.cer`.
+7. Isi fingerprint app jam (SHA-256 sertifikat **terakhir** di rantai `.cer`, yaitu sertifikat kamu sendiri, tanpa titik dua) ke `WATCH_FINGERPRINT` di `WatchLink.kt`. Cek dengan `keytool -printcert -file <file>.cer`.
+8. **Build → Build Hap(s)**, salin `entry-default-signed.hap` ke folder `/sdcard/haps/` di HP, lalu di DevEco Assistant buka **Apps**, pilih file itu, dan **Install**.
+
+## Catatan pengerjaan
+
+Hal-hal yang makan waktu waktu pertama kali, supaya tidak diulang:
+
+- **Error `40. Invalid configuration file format` saat Install: turunkan `compatibleSdkVersion`.** Pesannya menyesatkan, isi `config.json` tidak salah. DevEco 6.1.1 default-nya mengisi `compatible` dengan versi SDK-nya sendiri (`6.1.1(24)`), lebih tinggi dari API jam, dan jam menolak HAP itu. `6.1.1(24)` dan `6.1.0(23)` gagal, `5.1.0(18)` berhasil. `targetSdkVersion` dibiarkan `6.1.1(24)` karena itu SDK yang terpasang. Nilai 5.1.0(18) kami ambil dari proyek Lite Wearable lain yang terbukti jalan di Watch GT 6 ([pomodoro-odak](https://github.com/ahmetkurtbm/pomodoro-odak)). Batas persis API Watch Fit 4 belum kami cari tahu, jadi nilai di antara 18 dan 22 belum dicoba.
+- **Ikon wajib ada dengan ukuran persis:** `icon.png` 104×104 dan `icon_small.png` 92×92 di `entry/src/main/resources/base/media/`. Kalau tidak, error 40 yang sama muncul dari sebab lain.
+- **HAP harus ada di `/sdcard/haps/`.** Halaman Apps di DevEco Assistant hanya membaca folder itu. Pakai file `entry-default-signed.hap`, bukan `unsigned`.
+- **Jangan pakai regex di JS jam.** Mesin JS Lite Wearable tidak mendukungnya dan install gagal dengan error 34 (kata proyek referensi di atas). `wearengine.js` dan `index.js` sudah dicek, tidak ada.
+- **Dua warning build yang aman:** `font-weight is not a standard attribute` di `index.css` (teks jadi tidak tebal) dan `can not sign bin with codesign` (hanya muncul kalau build dari terminal).
+- **Build dari terminal:** `DEVECO_SDK_HOME` harus menunjuk ke folder `sdk` di instalasi DevEco, lalu jalankan `node hvigorw.js --mode module -p product=default assembleHap` dari `tools/hvigor/bin`. Setelah mengubah `build-profile.json5` di IDE, jalankan sync dulu sebelum build, kalau tidak nilai lama yang terpakai.
+- **Fingerprint:** pakai SHA-256 tanpa titik dua. `.cer` dari AppGallery Connect berisi tiga sertifikat (root, CA, milik kamu), dan yang dipakai sertifikat ketiga. Fingerprint HP (app Arahin) harus fingerprint sertifikat release, bukan debug, jadi pasang APK release di HP, bukan APK debug.
+- **Tampilan dan pesan dari HP ke jam di jalan sungguhan belum diuji.** Yang sudah terbukti baru build, signing, dan instal.
 
 ## Format pesan dari HP
 
