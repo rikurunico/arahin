@@ -37,7 +37,7 @@ class MapsRelay : NotificationListenerService() {
 
         if (!alert) return
 
-        TurnNotice.post(this, turn, eta)
+        TurnNotice.post(this, turn)
     }
 
     private fun signatureOf(bmp: Bitmap): IntArray {

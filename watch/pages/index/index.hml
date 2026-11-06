@@ -1,11 +1,11 @@
 <div class="page">
-  <text class="dist">{{ dist }}</text>
+  <text class="dist" style="color: {{ distColor }};">{{ dist }}</text>
   <div class="track">
     <div class="fill" style="width: {{ fill }}px;"></div>
   </div>
   <image class="arrow" src="{{ arrow }}"></image>
-  <text class="instr">{{ instr }}</text>
-  <div class="pill">
+  <text class="instr" style="font-size: {{ instrSize }}px;">{{ instr }}</text>
+  <div class="pill" if="{{ eta }}">
     <text class="eta">{{ eta }}</text>
   </div>
 </div>

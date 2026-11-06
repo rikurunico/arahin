@@ -8,7 +8,7 @@ Petunjuk belok Google Maps di smartwatch, jadi waktu touring cukup lirik pergela
 
 ## Cara kerja
 
-Notifikasi navigasi Google Maps cuma berisi jarak dan nama jalan. Arahnya ada di gambar panah. Arahin mencocokkan gambar itu dengan ikon yang diambil dari notifikasi Maps asli (`ManeuverIcon.kt`), lalu memunculkan notifikasi pendek seperti `◀ BELOK KIRI 200 m`. Huawei Health meneruskannya ke jam.
+Notifikasi navigasi Google Maps cuma berisi jarak dan nama jalan. Arahnya ada di gambar panah. Arahin mencocokkan gambar itu dengan ikon yang diambil dari notifikasi Maps asli (`ManeuverIcon.kt`), lalu memunculkan notifikasi pendek: judul `BELOK KIRI`, dan jaraknya `200 m` di baris bawah. Huawei Health meneruskannya ke jam.
 
 Maps memperbarui jarak kira-kira tiap 10 m, dan jam bakal getar tiap kali notifikasinya berubah. Karena itu Arahin cuma memunculkan notifikasi di **500**, **200**, dan **50 m** sebelum belokan (`AlertGate.kt`). Lurus, gabung jalur, dan jalan keluar tidak bikin getar.
 

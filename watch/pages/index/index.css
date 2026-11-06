@@ -9,7 +9,6 @@
 
 .dist {
   font-size: 72px;
-  font-weight: bold;
   color: #ffffff;
   text-align: center;
 }
@@ -34,7 +33,6 @@
 
 .instr {
   font-size: 36px;
-  font-weight: bold;
   color: #ffc700;
   text-align: center;
 }

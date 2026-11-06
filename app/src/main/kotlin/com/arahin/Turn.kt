@@ -32,18 +32,8 @@ private val ORDINAL = mapOf(
 
 // label is the short Indonesian instruction shown on the watch; meters is null when no distance was found
 data class Turn(val dir: Char, val dist: String?, val meters: Int?, val exit: Int?, val label: String) {
-    fun text(): String {
-        val glyph = when (dir) {
-            'L', 'l', 'h' -> "◀"
-            'R', 'r', 'j' -> "▶"
-            'U' -> "↩"
-            'O' -> "⟳"
-            'D' -> "⚑"
-            '?' -> "•"
-            else -> "▲"
-        }
-        return listOfNotNull(glyph, label.uppercase(), dist).joinToString(" ")
-    }
+    // The notification title, short so the watch does not scroll it. No arrows or flags: some watches lack those glyphs.
+    fun title() = label.uppercase()
 }
 
 private fun distance(t: String): Pair<String?, Int?> {

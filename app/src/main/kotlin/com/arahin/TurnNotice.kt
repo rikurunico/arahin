@@ -8,7 +8,8 @@ import android.content.Context
 private const val CHANNEL = "turn"
 private const val ID = 1
 
-// The short notification the watch companion mirrors to the wrist, e.g. "◀ BELOK KIRI 200 m".
+// The short notification the watch companion mirrors to the wrist: "BELOK KIRI" with "200 m" under it.
+// Both lines stay short on purpose, a long line (like an arrival time) turns into scrolling text on the watch.
 object TurnNotice {
     private fun nm(ctx: Context) = ctx.getSystemService(NotificationManager::class.java).apply {
         createNotificationChannel(
@@ -16,13 +17,13 @@ object TurnNotice {
         )
     }
 
-    // detail fills the line under the title; left empty, Huawei Health shows "You have one new message" there
-    fun post(ctx: Context, turn: Turn, detail: String?) = nm(ctx).notify(
+    // the distance fills the line under the title; left empty, Huawei Health shows "You have one new message" there
+    fun post(ctx: Context, turn: Turn) = nm(ctx).notify(
         ID,
         Notification.Builder(ctx, CHANNEL)
             .setSmallIcon(android.R.drawable.ic_menu_directions)
-            .setContentTitle(turn.text())
-            .setContentText(detail?.takeIf { it.isNotBlank() } ?: turn.label)
+            .setContentTitle(turn.title())
+            .setContentText(turn.dist ?: "Arahin")
             // like Maps' own: a private notification may reach the wrist only as "You have one new message"
             .setVisibility(Notification.VISIBILITY_PUBLIC)
             .setCategory(Notification.CATEGORY_NAVIGATION)

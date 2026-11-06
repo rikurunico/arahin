@@ -193,8 +193,8 @@ class MainActivity : Activity() {
         val eta = SimpleDateFormat("HH.mm", Locale.US).format(Date(System.currentTimeMillis() + min * 60_000L))
         notificationTurn(dist, "", IconMatch(dir, exit))?.let {
             val info = "$min min · $total · $eta ETA"
-            TurnNotice.post(this, it, info)
-            WatchLink.send(this, it, info) // also the watch app, so the Wear Engine link can be tried without driving
+            TurnNotice.post(this, it)
+            WatchLink.send(this, it, info, manual = true) // also the watch app, so the Wear Engine link can be tried without driving
         }
         toast("Terkirim, cek jam kamu")
     }
