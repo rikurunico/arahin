@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status bar icon: the launcher's turn arrow in one colour, the system tints it -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="60"
+    android:viewportHeight="60">
+    <group
+        android:translateX="-25.5"
+        android:translateY="-24">
+        <path
+            android:pathData="M39,77 L39,55 Q39,41 53,41 L62,41"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="11"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M58,26 L76,41 L58,56 Z"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>

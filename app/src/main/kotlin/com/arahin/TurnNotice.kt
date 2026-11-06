@@ -21,7 +21,7 @@ object TurnNotice {
     fun post(ctx: Context, turn: Turn) = nm(ctx).notify(
         ID,
         Notification.Builder(ctx, CHANNEL)
-            .setSmallIcon(android.R.drawable.ic_menu_directions)
+            .setSmallIcon(R.drawable.ic_stat_arahin)
             .setContentTitle(turn.title())
             .setContentText(turn.dist ?: "Arahin")
             // like Maps' own: a private notification may reach the wrist only as "You have one new message"

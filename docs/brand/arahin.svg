@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="512" height="512">
+  <title>Arahin</title>
+  <rect width="108" height="108" fill="#16181a"/>
+  <path d="M39 77V55Q39 41 53 41H62" fill="none" stroke="#ffc700" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M58 26L76 41L58 56Z" fill="#ffc700" stroke="#ffc700" stroke-width="3" stroke-linejoin="round"/>
+</svg>
