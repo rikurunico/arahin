@@ -1,6 +1,6 @@
 # Arahin watch app (Huawei Lite Wearable, JS)
 
-Layar navigasi di jam: instruksi, panah besar, jarak, dan ETA, dikirim dari app HP lewat Wear Engine.
+Layar navigasi di jam: jarak, instruksi, panah besar, jam tiba, durasi, dan sisa jarak, dikirim dari app HP lewat Wear Engine.
 
 Sudah berhasil dipasang di Huawei Watch Fit 4 (HarmonyOS 6.1.0) dengan DevEco Studio 6.1.1, template Lite Wearable (JS), dan `wearengine.js` 5.0.2.306. Masukkan source ini ke project DevEco Studio kamu sendiri, karena `config.json`, signing, dan `wearengine.js` dibuat atau diunduh di sana.
 
