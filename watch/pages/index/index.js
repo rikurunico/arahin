@@ -15,7 +15,7 @@ const ICON = {
 const DRIVE_LEFT = true // Indonesia: roundabouts run clockwise, exit 1 is on the left; set false for right-hand traffic
 const LEFT = 'Llh'
 const RIGHT = 'Rrj'
-const TRACK = 140 // px, keep equal to .track width in index.css
+const TRACK = 200 // px, keep equal to .track width in index.css
 const NEAR = 300 // metres where the bar starts filling
 const ALERTS = [500, 200, 50] // metres where the watch buzzes; a turn first seen farther away stays silent
 // the distance turns yellow within 200 m and orange within 50 m, so a glance tells how close the turn is
@@ -23,19 +23,23 @@ const COLD = '#ffffff'
 const WARM = '#ffc700'
 const HOT = '#ff6a3d'
 const LONG_INSTR = 16 // characters; longer instructions get a smaller font so they stay on screen
-const VERSION = 'v1.0.6' // keep equal to app.version.name in the module's config.json (code 1000006)
+const VERSION = 'v1.0.8' // keep equal to app.version.name in the module's config.json (code 1000008)
+const TRIP_NONE = '--' // shown in the trip columns until the phone knows the value
 
 export default {
   data: {
     instr: 'Menunggu rute',
-    instrSize: 26,
+    instrSize: 30,
     arrow: IMG + 'arrow-s.png',
     dist: '',
     distColor: COLD,
-    eta: '',
     fill: 0,
-    status: '', // clock and the two batteries, one line (see showStatus)
-    version: VERSION, // always on screen for now, so a photo of the watch tells which install it is
+    clock: '', // the phone's clock, sent with every turn
+    bats: '', // watch and phone battery, one text (see showBats)
+    arrive: TRIP_NONE,
+    duration: TRIP_NONE,
+    left: TRIP_NONE,
+    foot: VERSION, // the version until the first turn arrives, so a photo of the watch tells which install it is
   },
 
   onInit() {
@@ -52,7 +56,6 @@ export default {
         if (data && !data.isFileType) page.show(data)
       },
     })
-    this.clockPart = ''
     this.watchPart = ''
     this.phonePart = ''
     // the watch battery moves slowly, so ask for it once a minute
@@ -66,7 +69,7 @@ export default {
       battery.getStatus({
         success(data) {
           page.watchPart = 'Jam ' + Math.round(data.level * 100) + '%'
-          page.showStatus()
+          page.showBats()
         },
         fail() {
           page.watchPart = ''
@@ -77,10 +80,10 @@ export default {
     }
   },
 
-  // clock (from the phone), watch battery and phone battery as one text, empty parts left out
-  showStatus() {
-    const status = [this.clockPart, this.watchPart, this.phonePart].filter((p) => p).join('   ')
-    if (this.status !== status) this.status = status
+  // watch battery and phone battery as one text, empty parts left out
+  showBats() {
+    const bats = [this.watchPart, this.phonePart].filter((p) => p).join('   ')
+    if (this.bats !== bats) this.bats = bats
   },
 
   show(raw) {
@@ -104,17 +107,24 @@ export default {
     // only touch what changed, so the UI re-renders as little as possible
     const arrow = IMG + icon + '.png'
     if (this.instr !== m.t) this.instr = m.t
-    const size = m.t.length > LONG_INSTR ? 22 : 26
+    const size = m.t.length > LONG_INSTR ? 24 : 30
     if (this.instrSize !== size) this.instrSize = size
     if (this.arrow !== arrow) this.arrow = arrow
     if (this.dist !== m.m) this.dist = m.m
     const color = m.n < 0 || m.n > ALERTS[1] ? COLD : m.n > ALERTS[2] ? WARM : HOT
     if (this.distColor !== color) this.distColor = color
-    if (this.eta !== m.e) this.eta = m.e
     // the clock comes from the phone: the watch's own Date is not trusted on this engine
-    this.clockPart = m.c || ''
+    if (this.clock !== (m.c || '')) this.clock = m.c || ''
     this.phonePart = m.b >= 0 ? 'HP ' + m.b + '%' : ''
-    this.showStatus()
+    this.showBats()
+    // the phone sends 'Tiba 13.17'; the column has its own 'Tiba' label
+    const arrive = m.e ? (m.e.indexOf('Tiba ') === 0 ? m.e.substring(5) : m.e) : TRIP_NONE
+    if (this.arrive !== arrive) this.arrive = arrive
+    const duration = m.u || TRIP_NONE
+    if (this.duration !== duration) this.duration = duration
+    const left = m.r || TRIP_NONE
+    if (this.left !== left) this.left = left
+    if (this.foot !== 'Navigasi aktif') this.foot = 'Navigasi aktif'
     const fill = m.n < 0 ? 0 : Math.round(TRACK * Math.max(0, Math.min(1, 1 - m.n / NEAR)))
     if (this.fill !== fill) this.fill = fill
   },

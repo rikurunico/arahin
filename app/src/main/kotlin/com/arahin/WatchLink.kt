@@ -44,7 +44,7 @@ object WatchLink {
     private var lastAt = 0L
     private var retryAt = 0L
     private val handler = Handler(Looper.getMainLooper())
-    @Volatile private var latest: Pair<Turn, String?>? = null // what the watch should be showing right now
+    @Volatile private var latest: Pair<Turn, Trip>? = null // what the watch should be showing right now
     private var lookedUpAt = 0L
 
     fun authorize(activity: Activity) {
@@ -98,15 +98,15 @@ object WatchLink {
     }
 
     // the exact JSON the watch's index.js parses
-    fun payload(turn: Turn, eta: String?, battery: Int = -1, clock: String = ""): String = JSONObject()
-        .put("d", turn.dir.toString()).put("m", turn.dist.orEmpty()).put("n", turn.meters ?: -1).put("t", turn.label).put("x", turn.exit ?: 0).put("e", eta.orEmpty()).put("b", battery).put("c", clock)
+    fun payload(turn: Turn, trip: Trip, battery: Int = -1, clock: String = ""): String = JSONObject()
+        .put("d", turn.dir.toString()).put("m", turn.dist.orEmpty()).put("n", turn.meters ?: -1).put("t", turn.label).put("x", turn.exit ?: 0).put("e", trip.arrival).put("u", trip.minutes?.let { "$it mnt" }.orEmpty()).put("r", distanceLabel(trip.meters)).put("b", battery).put("c", clock)
         .toString()
 
     // manual = a person pressed "Kirim tes": try now even if a recent send failed
-    fun send(ctx: Context, turn: Turn, eta: String?, manual: Boolean = false) {
-        latest = turn to eta // even when this call is throttled, so a watch app opened later gets the newest turn
+    fun send(ctx: Context, turn: Turn, trip: Trip, manual: Boolean = false) {
+        latest = turn to trip // even when this call is throttled, so a watch app opened later gets the newest turn
         val d = device ?: return retryLookup(ctx)
-        val body = payload(turn, eta, batteryPercent(ctx), SimpleDateFormat("HH:mm", Locale.US).format(Date()))
+        val body = payload(turn, trip, batteryPercent(ctx), SimpleDateFormat("HH:mm", Locale.US).format(Date()))
         // Maps re-posts every second; skip repeats and cap the Bluetooth traffic at 1 message/s
         val now = System.currentTimeMillis()
         // an unchanged turn is still re-sent every few seconds: a watch app that was just opened, or woke up empty, fills
@@ -137,7 +137,7 @@ object WatchLink {
         val app = ctx.applicationContext
         p2p(ctx).ping(d) { code ->
             if (code == WearEngineErrorCode.ERROR_CODE_P2P_WATCH_APP_NOT_EXIT) return@ping update(LinkState.Failed(code, "buka app"))
-            handler.postDelayed({ latest?.let { (turn, eta) -> send(app, turn, eta, manual = true) } }, LAUNCH_MS)
+            handler.postDelayed({ latest?.let { (turn, trip) -> send(app, turn, trip, manual = true) } }, LAUNCH_MS)
         }
     }
 

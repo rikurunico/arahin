@@ -28,7 +28,7 @@ Arahin tidak punya izin `INTERNET`, hanya membaca notifikasi `com.google.android
 
 ## Layar navigasi di jam (opsional)
 
-Ada juga app kecil untuk jam yang menampilkan panah besar dan getar beda untuk kiri dan kanan. Source-nya di [`watch/`](watch/README.md). App ini perlu akun developer Huawei terverifikasi, izin **Wear Engine** (Basic device information), dan fingerprint signing di `WatchLink.kt` serta `watch/pages/index/index.js`. SHA-256 sertifikat APK release:
+Ada juga app kecil untuk jam yang menampilkan panah besar, jarak, jam tiba, durasi, sisa jarak, dan getar beda untuk kiri dan kanan. Jam tiba dan sisa jarak diambil dari notifikasi Google Maps (data progres rute di dalamnya, dalam meter); durasi dihitung dari jam tiba. Source-nya di [`watch/`](watch/README.md). App ini perlu akun developer Huawei terverifikasi, izin **Wear Engine** (Basic device information), dan fingerprint signing di `WatchLink.kt` serta `watch/pages/index/index.js`. SHA-256 sertifikat APK release:
 
 ```
 28:DA:EB:EF:9C:CB:F3:12:5D:20:9F:44:77:F6:5B:D2:FE:B4:50:65:66:73:79:C5:08:01:F4:15:DF:D0:37:D9

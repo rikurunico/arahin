@@ -28,12 +28,14 @@ class MapsRelay : NotificationListenerService() {
         val bmp = (sbn.notification.getLargeIcon()?.loadDrawable(this) as? BitmapDrawable)?.bitmap
         val icon = bmp?.let { matchIcon(signatureOf(it)) }
         val turn = notificationTurn(title, text, icon) ?: return
+        // the route in metres: progress so far out of the whole length, so the rest of the trip can be shown
+        val trip = tripOf(eta, e.getInt(Notification.EXTRA_PROGRESS, -1), e.getInt(Notification.EXTRA_PROGRESS_MAX, -1))
         val alert = gate.shouldAlert(turn)
         // calibration: only debug builds print the raw Maps text next to the JSON the watch would receive
         if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
-            Log.d("Arahin", "raw=[$title | $text | $eta] icon=${bmp?.let(::dumpIcon)}:$icon alert=$alert -> ${WatchLink.payload(turn, eta)}")
+            Log.d("Arahin", "raw=[$title | $text | $eta] icon=${bmp?.let(::dumpIcon)}:$icon alert=$alert -> ${WatchLink.payload(turn, trip)}")
         }
-        WatchLink.send(this, turn, arrivalLabel(eta))
+        WatchLink.send(this, turn, trip)
 
         if (!alert) return
 

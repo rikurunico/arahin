@@ -1,5 +1,5 @@
-/* Sizes are design pixels (the page is 454 wide), so a Watch Fit 4 (480x408) has only about 386 of height and a round
-   watch loses its corners. Everything stays well under that and inside the middle of the screen. */
+/* Sizes are design pixels (the page is 454 wide). A Watch Fit 4 is 408x480 real pixels, portrait, so there are about
+   534 of height. Rows and columns get a fixed width: a row of texts without one was not drawn on the watch. */
 .page {
   width: 100%;
   height: 100%;
@@ -9,65 +9,109 @@
   justify-content: center;
 }
 
-/* clock and the two batteries as one line of text: a row of separate texts did not show on the watch */
-.status {
-  font-size: 22px;
-  color: #d0d0d8;
-  text-align: center;
-  margin-bottom: 4px;
-}
-
-.small {
-  font-size: 18px;
-  color: #a0a0a8;
-  text-align: center;
-}
-
-.dist {
-  font-size: 50px;
-  color: #ffffff;
-  text-align: center;
-  margin-bottom: 2px;
-}
-
-.track {
-  width: 140px;
-  height: 8px;
-  border-radius: 4px;
-  background-color: #2a2a2e;
+/* narrower than the rest and a little lower: the screen corners are rounded and cut a full-width row */
+.top {
+  width: 320px;
+  height: 34px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
   margin-bottom: 6px;
 }
 
+.clock {
+  width: 80px;
+  font-size: 22px;
+  color: #b4b4bc;
+  text-align: left;
+}
+
+.bats {
+  width: 230px;
+  font-size: 20px;
+  color: #b4b4bc;
+  text-align: right;
+}
+
+.dist {
+  font-size: 56px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.instr {
+  font-size: 30px;
+  color: #ffffff;
+  text-align: center;
+  margin-top: 2px;
+}
+
+.track {
+  width: 200px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: #2a2a2e;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
 .fill {
-  height: 8px;
-  border-radius: 4px;
+  height: 6px;
+  border-radius: 3px;
   background-color: #ffc700;
 }
 
 .disc {
-  width: 150px;
-  height: 150px;
-  border-radius: 75px;
+  width: 190px;
+  height: 190px;
+  border-radius: 95px;
   background-color: #17181b;
   align-items: center;
   justify-content: center;
 }
 
 .arrow {
-  width: 124px;
-  height: 124px;
+  width: 156px;
+  height: 156px;
 }
 
-.instr {
-  font-size: 26px;
-  color: #ffc700;
-  text-align: center;
-  margin-top: 4px;
+.line {
+  width: 400px;
+  height: 1px;
+  background-color: #2a2a2e;
+  margin-top: 14px;
 }
 
-.eta {
+.cols {
+  width: 400px;
+  height: 66px;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.col {
+  width: 128px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lbl {
   font-size: 18px;
-  color: #d0d0d8;
+  color: #8a8a94;
+  text-align: center;
+}
+
+.val {
+  font-size: 26px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.foot {
+  font-size: 16px;
+  color: #6a6a74;
   text-align: center;
   margin-top: 4px;
 }

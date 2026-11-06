@@ -193,14 +193,13 @@ class MainActivity : Activity() {
         val dist = if (m < 1000) "$m m" else "%.1f km".format(Locale.US, m / 1000.0)
         val left = m + Random.nextInt(300, 9000) // rest of the route, in metres
         val min = maxOf(1, left / 450) // ~27 km/h through town
-        val total = if (left < 1000) "$left m" else "%.1f km".format(Locale("id"), left / 1000.0)
         val eta = SimpleDateFormat("HH.mm", Locale.US).format(Date(System.currentTimeMillis() + min * 60_000L))
         notificationTurn(dist, "", IconMatch(dir, exit))?.let {
-            val info = "Tiba $eta · $min mnt · $total"
+            val trip = Trip("Tiba $eta", min, left)
             TurnNotice.post(this, it)
             // also the watch app, so the Wear Engine link can be tried without driving; open() re-sends this turn
             // once the app has started, in case it was closed
-            WatchLink.send(this, it, info, manual = true)
+            WatchLink.send(this, it, trip, manual = true)
             WatchLink.open(this)
         }
         toast("Notifikasi dikirim. Status app jam ada di langkah 6")

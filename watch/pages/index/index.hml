@@ -1,13 +1,30 @@
 <div class="page">
-  <text class="status">{{ status }}</text>
+  <div class="top">
+    <text class="clock">{{ clock }}</text>
+    <text class="bats">{{ bats }}</text>
+  </div>
   <text class="dist" style="color: {{ distColor }};">{{ dist }}</text>
+  <text class="instr" style="font-size: {{ instrSize }}px;">{{ instr }}</text>
   <div class="track">
     <div class="fill" style="width: {{ fill }}px;"></div>
   </div>
   <div class="disc">
     <image class="arrow" src="{{ arrow }}"></image>
   </div>
-  <text class="instr" style="font-size: {{ instrSize }}px;">{{ instr }}</text>
-  <text class="eta">{{ eta }}</text>
-  <text class="small">{{ version }}</text>
+  <div class="line"></div>
+  <div class="cols">
+    <div class="col">
+      <text class="lbl">Tiba</text>
+      <text class="val">{{ arrive }}</text>
+    </div>
+    <div class="col">
+      <text class="lbl">Durasi</text>
+      <text class="val">{{ duration }}</text>
+    </div>
+    <div class="col">
+      <text class="lbl">Sisa jarak</text>
+      <text class="val">{{ left }}</text>
+    </div>
+  </div>
+  <text class="foot">{{ foot }}</text>
 </div>
