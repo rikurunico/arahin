@@ -19,7 +19,7 @@ Sudah berhasil dipasang di Huawei Watch Fit 4 (HarmonyOS 6.1.0) dengan DevEco St
    - Ambil UDID jam dari app **DevEco Assistant** di HP (tab Lite Wearable, jam harus tersambung lewat Huawei Health).
    - Di AppGallery Connect → *Certificates, app IDs, and profiles*: tambah jam di **Devices** (tipe Sports watch), upload `.csr` sebagai sertifikat **Debug**, buat **App ID** `com.arahin.watch`, lalu buat **Profile** tipe Debug yang berisi app, sertifikat, dan jam itu. Unduh `.cer` dan `.p7b`.
    - Di DevEco: **File → Project Structure → Signing Configs**, matikan "Automatically generate signature", isi `.p12`, password, alias, `.p7b`, dan `.cer`.
-7. Isi fingerprint app jam (SHA-256 sertifikat **terakhir** di rantai `.cer`, yaitu sertifikat kamu sendiri, tanpa titik dua) ke `WATCH_FINGERPRINT` di `WatchLink.kt`. Cek dengan `keytool -printcert -file <file>.cer`.
+7. Isi `WATCH_FINGERPRINT` di `WatchLink.kt` dengan `<bundle name>_<base64 kunci publik>`, dari sertifikat **terakhir** di `.cer` (milik kamu; dua sebelumnya root dan CA Huawei). Kunci publik yang dimaksud adalah titik EC mentah 65 byte (berawalan `0x04`), bukan SHA-256. Di PowerShell: ambil blok `BEGIN/END CERTIFICATE` terakhir, buat `X509Certificate2`, lalu `[Convert]::ToBase64String($cert.PublicKey.EncodedKeyValue.RawData)`.
 8. **Build → Build Hap(s)**, salin `entry-default-signed.hap` ke folder `/sdcard/haps/` di HP, lalu di DevEco Assistant buka **Apps**, pilih file itu, dan **Install**.
 
 ## Catatan pengerjaan
@@ -32,10 +32,10 @@ Hal-hal yang makan waktu waktu pertama kali, supaya tidak diulang:
 - **Jangan pakai regex di JS jam.** Mesin JS Lite Wearable tidak mendukungnya dan install gagal dengan error 34 (kata proyek referensi di atas). `wearengine.js` dan `index.js` sudah dicek, tidak ada.
 - **Dua warning build yang aman:** `font-weight is not a standard attribute` di `index.css` (teks jadi tidak tebal) dan `can not sign bin with codesign` (hanya muncul kalau build dari terminal).
 - **Build dari terminal:** `DEVECO_SDK_HOME` harus menunjuk ke folder `sdk` di instalasi DevEco, lalu jalankan `node hvigorw.js --mode module -p product=default assembleHap` dari `tools/hvigor/bin`. Setelah mengubah `build-profile.json5` di IDE, jalankan sync dulu sebelum build, kalau tidak nilai lama yang terpakai.
-- **Fingerprint:** pakai SHA-256 tanpa titik dua. `.cer` dari AppGallery Connect berisi tiga sertifikat (root, CA, milik kamu), dan yang dipakai sertifikat ketiga. Fingerprint HP (app Arahin) harus fingerprint sertifikat release, bukan debug, jadi pasang APK release di HP, bukan APK debug.
-- **Sisi HP juga perlu didaftarkan** (urutan kami menemukannya): kode 12 saat cek izin berhenti setelah (1) SHA-256 sertifikat release ditambahkan di AppGallery Connect, di app HP (`com.arahin`), dan (2) manifest HP memuat `<meta-data android:name="com.huawei.hms.client.appid" android:value="appid=<App ID>"/>`. Setelah itu status berganti ke kode 206 saat kirim, artinya Huawei Health sudah menerima app tapi pesan ke jam gagal. Penyebab 206 belum dipastikan; kecurigaan utama format `WATCH_FINGERPRINT` (lihat di bawah).
-- **Format fingerprint jam yang diminta Wear Engine belum pasti.** Kami mengisi SHA-256 heksadesimal sertifikat jam. Ada laporan lain bahwa untuk Lite Wearable formatnya `<nama paket>_<base64 kunci publik>`. Kalau pesan terus gagal dengan 206, coba format itu.
-- **Tampilan dan pesan dari HP ke jam di jalan sungguhan belum diuji.** Yang sudah terbukti baru build, signing, dan instal.
+- **Dua format fingerprint, tergantung arah.** Di jam (`PHONE_FINGERPRINT`, `supportLists`) pakai SHA-256 sertifikat release app HP, tanpa titik dua, dan pasang APK **release** di HP (bukan debug). Di HP (`WATCH_FINGERPRINT`) pakai `<bundle>_<base64 kunci publik>` seperti langkah 7. `.cer` dari AppGallery Connect berisi tiga sertifikat; yang dipakai yang ketiga.
+- **Sisi HP juga perlu didaftarkan.** Kode 12 saat cek izin berhenti setelah (1) SHA-256 sertifikat release ditambahkan di AppGallery Connect, di app HP (`com.arahin`), dan (2) manifest HP memuat `<meta-data android:name="com.huawei.hms.client.appid" android:value="appid=<App ID>"/>`.
+- **Kode 206 saat kirim: pastikan layar jam menyala dan app Arahin terbuka di jam.** Itu penyebab 206 yang kami alami. Kami sempat mengganti format `WATCH_FINGERPRINT` ke `<bundle>_<base64 kunci publik>` karena sebuah artikel menyebut format yang salah menyebabkan 206, jadi belum jelas apakah format lama (SHA-256) juga akan ditolak. Format baru terbukti jalan.
+- **Terbukti di Watch Fit 4:** build, signing, instal, dan pesan dari HP ke jam lewat tombol Kirim tes. Navigasi Google Maps sungguhan di jalan belum diuji.
 
 ## Format pesan dari HP
 

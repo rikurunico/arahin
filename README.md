@@ -39,7 +39,7 @@ Tanpa ini pun notifikasi tetap jalan.
 Di app HP, status sambungan ke jam tampil di langkah terakhir checklist ("Layar navigasi di jam"). Kalau gagal, barisnya menyebut kode Wear Engine dan tahap yang gagal. Yang sudah kami temui:
 
 - **Kode 12 saat "cek izin"**: Huawei Health tidak mengenali app. Daftarkan SHA-256 sertifikat di AppGallery Connect (*Development and services → Project settings → app → SHA-256 certificate fingerprint*) dan pastikan manifest punya `com.huawei.hms.client.appid`. Nilainya dari `arahin.hms.appid` di `local.properties`, default App ID `com.arahin` (119552031). Kalau kamu mengganti `applicationId`, isi dengan App ID app kamu sendiri.
-- **Kode 206 saat "kirim"**: pesan ke jam gagal. Lihat [`watch/README.md`](watch/README.md) bagian catatan pengerjaan.
+- **Kode 206 saat "kirim"**: pesan ke jam gagal. Biasanya layar jam mati atau app Arahin di jam belum dibuka. Lihat [`watch/README.md`](watch/README.md) bagian catatan pengerjaan.
 
 ## Build sendiri
 

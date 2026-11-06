@@ -36,6 +36,6 @@ internal fun failureText(code: Int) = when (code) {
     Code.ERROR_CODE_DEVICE_IS_NOT_CONNECTED -> "Jam tidak tersambung"
     Code.ERROR_CODE_P2P_WATCH_APP_NOT_EXIT -> "App Arahin belum terpasang di jam"
     Code.ERROR_CODE_P2P_WATCH_APP_NOT_RUNNING -> "App Arahin di jam belum dibuka"
-    Code.ERROR_CODE_COMM_FAIL -> "Pesan gagal terkirim"
+    Code.ERROR_CODE_COMM_FAIL -> "Pesan gagal terkirim. Nyalakan layar jam dan buka app Arahin di jam"
     else -> "Gagal"
 }

@@ -13,7 +13,8 @@ import com.huawei.wearengine.p2p.SendCallback
 import org.json.JSONObject
 
 private const val WATCH_PKG = "com.arahin.watch"
-private const val WATCH_FINGERPRINT = "0AA3F3346209632D66BD054693AD929C4830A470B94701DFEA0E3B711035EB1D"
+// Lite Wearable format: <bundle>_<base64 of the 65-byte EC public key in the last certificate of the watch .cer>
+private const val WATCH_FINGERPRINT = "com.arahin.watch_BC0UOQc+K43wZsl8kgMn63fetk/E8sAXYOHyZKXAw0esirI2DuiCw7pPTRlzK3Y3P2yxEe8TuxTK9F6PrT+e1nc="
 private const val RETRY_MS = 5_000L
 
 object WatchLink {
