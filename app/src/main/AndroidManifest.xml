@@ -19,6 +19,11 @@
         android:label="Arahin"
         android:theme="@style/Theme.Arahin">
 
+        <!-- Huawei Health identifies the app by its AppGallery Connect app ID; without it every Wear Engine call fails with error 12 -->
+        <meta-data
+            android:name="com.huawei.hms.client.appid"
+            android:value="appid=${hmsAppId}" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

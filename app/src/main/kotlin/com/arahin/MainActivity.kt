@@ -36,7 +36,9 @@ class MainActivity : Activity() {
         val action: String,
         val done: (() -> Boolean)?, // null = cannot be checked from the phone
         val run: () -> Unit,
-    )
+    ) {
+        var live: (() -> String)? = null // extra line under the body that changes while the screen is open
+    }
 
     private val steps by lazy {
         listOf(
@@ -70,8 +72,8 @@ class MainActivity : Activity() {
             Step(
                 Kind.OPTIONAL, "Layar navigasi di jam",
                 "App Arahin di jam: panah besar, getar kiri dan kanan beda. Perlu izin Wear Engine dari Huawei. Kalau notifikasi sudah cukup, lewati aja.",
-                "Hubungkan", null,
-            ) { WatchLink.authorize(this) { toast("Selesai") } },
+                "Hubungkan", { WatchLink.state.linked },
+            ) { WatchLink.authorize(this) }.apply { live = { WatchLink.state.label() } },
         )
     }
 
@@ -95,7 +97,14 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
+        WatchLink.onChange = { runOnUiThread(::render) }
+        WatchLink.refresh(this)
         render()
+    }
+
+    override fun onPause() {
+        WatchLink.onChange = null
+        super.onPause()
     }
 
     private fun render() {
@@ -103,12 +112,13 @@ class MainActivity : Activity() {
         val left = required.count { it.done?.invoke() != true }
         findViewById<TextView>(R.id.progress).text =
             if (left == 0) "Izin HP lengkap" else "${required.size - left} dari ${required.size} izin wajib aktif"
-        // the first unchecked step is the one to do next
-        val next = steps.indexOfFirst { it.done?.invoke() == false }.takeIf { it >= 0 }
+        // the first unchecked step is the one to do next; optional steps never take the highlight
+        val next = steps.indexOfFirst { it.kind != Kind.OPTIONAL && it.done?.invoke() == false }.takeIf { it >= 0 }
             ?: steps.indexOfFirst { it.done == null && it.kind == Kind.REQUIRED }
         steps.forEachIndexed { i, s ->
             val row = list.getChildAt(i)
             val done = s.done?.invoke() == true
+            s.live?.let { row.findViewById<TextView>(R.id.body).text = "${s.body}\n\n${it()}" }
             val badge = row.findViewById<TextView>(R.id.badge)
             badge.text = if (done) "✓" else "${i + 1}"
             badge.setTextColor(getColor(if (done) R.color.on_accent else if (s.kind == Kind.OPTIONAL) R.color.muted else R.color.accent))
@@ -181,7 +191,11 @@ class MainActivity : Activity() {
         val min = maxOf(1, left / 450) // ~27 km/h through town
         val total = if (left < 1000) "$left m" else "%.1f km".format(Locale.US, left / 1000.0)
         val eta = SimpleDateFormat("HH.mm", Locale.US).format(Date(System.currentTimeMillis() + min * 60_000L))
-        notificationTurn(dist, "", IconMatch(dir, exit))?.let { TurnNotice.post(this, it, "$min min · $total · $eta ETA") }
+        notificationTurn(dist, "", IconMatch(dir, exit))?.let {
+            val info = "$min min · $total · $eta ETA"
+            TurnNotice.post(this, it, info)
+            WatchLink.send(this, it, info) // also the watch app, so the Wear Engine link can be tried without driving
+        }
         toast("Terkirim, cek jam kamu")
     }
 
