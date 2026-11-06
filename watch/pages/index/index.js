@@ -14,7 +14,7 @@ const ICON = {
 const DRIVE_LEFT = true // Indonesia: roundabouts run clockwise, exit 1 is on the left; set false for right-hand traffic
 const LEFT = 'Llh'
 const RIGHT = 'Rrj'
-const TRACK = 280 // px, keep equal to .track width in index.css
+const TRACK = 160 // px, keep equal to .track width in index.css
 const NEAR = 300 // metres where the bar starts filling
 const ALERTS = [500, 200, 50] // metres where the watch buzzes; a turn first seen farther away stays silent
 // the distance turns yellow within 200 m and orange within 50 m, so a glance tells how close the turn is
@@ -26,7 +26,7 @@ const LONG_INSTR = 16 // characters; longer instructions get a smaller font so t
 export default {
   data: {
     instr: 'Menunggu rute',
-    instrSize: 36,
+    instrSize: 32,
     arrow: IMG + 'arrow-s.png',
     dist: '',
     distColor: COLD,
@@ -71,7 +71,7 @@ export default {
     // only touch what changed, so the UI re-renders as little as possible
     const arrow = IMG + icon + '.png'
     if (this.instr !== m.t) this.instr = m.t
-    const size = m.t.length > LONG_INSTR ? 28 : 36
+    const size = m.t.length > LONG_INSTR ? 26 : 32
     if (this.instrSize !== size) this.instrSize = size
     if (this.arrow !== arrow) this.arrow = arrow
     if (this.dist !== m.m) this.dist = m.m

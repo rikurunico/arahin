@@ -3,7 +3,9 @@
   <div class="track">
     <div class="fill" style="width: {{ fill }}px;"></div>
   </div>
-  <image class="arrow" src="{{ arrow }}"></image>
+  <div class="disc">
+    <image class="arrow" src="{{ arrow }}"></image>
+  </div>
   <text class="instr" style="font-size: {{ instrSize }}px;">{{ instr }}</text>
   <div class="pill" if="{{ eta }}">
     <text class="eta">{{ eta }}</text>
