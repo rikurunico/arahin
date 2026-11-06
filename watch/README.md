@@ -9,6 +9,7 @@ Sudah berhasil dipasang di Huawei Watch Fit 4 (HarmonyOS 6.1.0) dengan DevEco St
 1. DevEco Studio: buat project **Lite Wearable** (JS, template Empty), bundle name `com.arahin.watch`. Lalu di `build-profile.json5` set `"compatibleSdkVersion": "5.1.0(18)"`. Ini yang paling gampang terlewat, lihat [Catatan pengerjaan](#catatan-pengerjaan).
 2. Unduh `wearengine.js` ([Wear Engine SDK, Lite Wearable](https://developer.huawei.com/consumer/en/doc/connectivity-guides/integrating-fitnesstwatch-sdk-0000001052859174)) ke `entry/src/main/js/MainAbility/pages/`.
 3. Salin isi folder `pages/index/` di sini ke `entry/src/main/js/MainAbility/pages/index/`, lalu salin folder `common/images/` (empat `arrow-*.png`) ke `entry/src/main/js/MainAbility/common/`.
+   Ikon app jam (`media/icon.png` 104×104 dan `media/icon_small.png` 92×92, lingkaran dengan sudut transparan) disalin ke `entry/src/main/resources/base/media/`.
 4. Di `config.json` modul, tambahkan (fingerprint = SHA-256 sertifikat signing app HP):
    ```json
    "metaData": { "customizeData": [{ "name": "supportLists", "value": "com.arahin:<PHONE_FINGERPRINT>", "extra": "" }] }
